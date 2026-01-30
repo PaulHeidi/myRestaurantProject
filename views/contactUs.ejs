@@ -1,0 +1,238 @@
+<html>
+    <head>
+       <%- include('partials/header1.ejs') %>
+       <!--dropdown menu-->
+                        <div class="dropdown" >
+                              <button tupe="button" class="image-btn"><img src="/public/images/dropdownBar.jpg" width="70" height="20"></button>
+                             <div class="content">
+                                    <a href="/">Home</a>
+                                   <a href="/menu">Menu</a>
+                                   <a href="/booking">Reservation</a>
+                                   <a href="/onlineOrder">Order online</a>
+                                   <a href="/gallery">Gallery</a>
+                                   <a href="/career1">Career</a> 
+                                   <a href="/feedback">Feedback</a>
+                                   <a href="/contactus">Contact us</a> 
+                                  <a href="/admin">Admin login</a>                            </div>
+                       </div>   
+                        <div class="header">
+                        </div>   
+                        <div class="bodyImg2" >
+
+                        </div>   
+
+
+                        <script
+                              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6myHzS10YXdcazAFalmXvDkrYCp5cLc8&libraries=maps,marker&v=weekly"
+                                      defer>
+                         </script>
+                        <!--google map stylesheet-->
+
+
+
+
+                 <style>
+                        /*Sign up form */
+                        /* Container for image and form */
+                             .image-container {
+                                 position: relative; /* Needed for absolute positioning inside */
+                                 display:flex;
+                             }
+
+                         /* The background image */
+                             .image-container img {
+                             display: block;   
+                            }
+
+                       
+                </style>
+
+
+<!--contact us form-->
+                <style>
+                       
+
+                        /* The form overlay */
+                             .form-overlay1 {
+                              width: 100%;
+                              height: 100vh;
+                              display: grid;
+                              place-items: center;
+                              background-image: url('/public/images/contact2.jpg');
+                              background-size:cover; 
+                              background-repeat: no-repeat;
+                              border-radius: 5px;
+                              border: 2px solid rgb(196, 144, 40);
+                              top: 600px; /* Distance from top of image */
+                              left: 270px; /* Distance from left of image */
+                              background-color: rgb(241, 241, 240);
+                              padding: 80px 47px ;
+                              border-radius: 8px;
+                              box-shadow: 6 8px 10x rgba(0,0,0,0.2);
+                        }
+
+                         /* Form styling */
+                            .form-overlay1 input{
+                              background-color: rgba(215, 130, 20, 0.684);
+                              height: 30px;    
+                              padding: 20px;
+                              width: 220px;
+                              border:5px;
+                              border-radius: 10px;
+                              outline: none;
+                              margin-bottom: 12px;
+
+                        }
+                             .form-overlay1 button {
+                                height: 3%;
+                                width: 20%;
+                                position:relative;
+                                border:2px solid;
+                                background-color: green;
+                        }
+                         .form-overlay1 textarea{
+                              background-color:  rgba(215, 130, 20, 0.684);
+                              padding: 10px;
+                              width: 445px;
+                              border:5;
+                              border-radius: 10px;
+                              outline: none;
+                              margin-bottom: 12px;
+
+                        }
+                        .form-overlay1 select{
+                             background-color:  rgba(215, 130, 20, 0.684);
+                              height: 35px;    
+                              padding: 10px;
+                              width: 220px;
+                              border:5;
+                              border-radius: 10px;
+                              outline: none;
+                              margin-bottom: 12px;
+                              font-size: small;
+                              font-weight: lighter;
+
+                        }
+                </style>
+
+
+               
+                                
+    </head>
+        
+    <body>
+    
+        <!--    <%- include('partials/navbar1.ejs') %> -->
+          
+<!--Form testing-->
+<div class="form-overlay1">
+                        
+  
+                <form method="post" action="contactUs" id="contactForm" onsubmit="submitContact(event)">
+                    <h2>Contact us</h2>
+                    <input type="text" id="name" name="name" placeholder="Your Name">
+                    <input type="text" id="email" name="email" placeholder="Your Email">
+
+                    <div>
+                        <input type="text" id="phone" name="phone" placeholder="Phone No.">
+                         <input type="text" id="subject" name="subject" placeholder="Subject">                        
+                    </div>
+                    
+                    <div>
+                        <textarea id="message" name="message" row="20" column="100" placeholder="Message"></textarea> 
+                    </div>
+
+                    <button type="submit">Submit</button>
+                </form>
+</div>
+
+<!--popup menu design and dispalay-->
+<script>
+function submitContact(event) {
+  event.preventDefault();
+
+  const form = document.getElementById("contactForm");
+  const formData = new FormData(form);
+  const jsonData = Object.fromEntries(formData);
+
+  fetch("/contactUs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(jsonData)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showPopup(data.message);
+      form.reset();
+    } else {
+      showPopup("Something went wrong. Please try again.");
+    }
+  });
+}
+
+function showPopup(message) {
+  const popup = document.createElement("div");
+  popup.style.position = "fixed";
+  popup.style.top = "50%";
+  popup.style.left = "50%";
+  popup.style.transform = "translate(-50%, -50%)";
+  popup.style.background = "#fff";
+  popup.style.padding = "20px";
+  popup.style.border = "2px solid #333";
+  popup.style.borderRadius = "8px";
+  popup.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+  popup.style.zIndex = "9999";
+  popup.innerHTML = `<h3>${message}</h3>`;
+
+  document.body.appendChild(popup);
+
+  setTimeout(() => popup.remove(), 3000);
+}
+</script>
+
+
+
+         
+                    <!-- Sign up form -->              
+                    <div class="image-container">
+                        <img class="img2" src="/public/images/bodyImg2.jpg">
+  
+                              <form class="form-overlay" action="contact2" method="POST">
+                                 <h3>Sign Up</h3>
+                                     <input type="text" name="name" id="name" placeholder="Your name"></br>
+                                     <input type="email" name="email" id="email" placeholder="your email"></br>
+                                     <button type="submit">Submit</button>
+                              </form>
+                    
+                    <!--Social media connection -->
+                       <div class="text-overlay">
+                         <h6>Follow us on .....</h6>
+                        <a href="https://www.instagram.com" target="_blank">
+                            <img src="/public/images/instragram.png" class="sm_icon" >
+                        </a>
+
+                        <a href="https://www.facebook.com" target="_blank">
+                            <img src="/public/images/facebook.png" class="sm_icon1">
+                        </a> 
+
+                        <a href="https://www.facebook.com" target="_blank">
+                            <img src="/public/images/twiter.png" class="sm_icon2">
+                        </a>  
+                        </div>   
+            
+
+
+                        
+            
+                 
+
+                <!--footer-->
+                    <div class="footer">
+                     <p>&copy; My website , all rights reserved</p>
+                    </div>
+            
+        </body>
+        
+</html>
+

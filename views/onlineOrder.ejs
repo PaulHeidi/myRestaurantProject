@@ -1,0 +1,836 @@
+<html>
+    <head>
+<%- include('partials/header1.ejs') %>
+        <!--<%- include('partials/navbar1.ejs') %> -->
+       <!--dropdown menu-->
+                        <div class="dropdown" >
+                              <button type="button" class="image-btn" onclick="toggleDropdown()"><img src="/public/images/dropdownBar.jpg" width="70" height="20"></button>
+                             <div class="content">
+                                   <a href="/">Home</a>
+                                   <a href="/menu">Menu</a>
+                                   <a href="/booking">Reservation</a>
+                                   <a href="/onlineOrder">Order online</a>
+                                   <a href="/gallery">Gallery</a>
+                                   <a href="/career1">Career</a> 
+                                   <a href="/feedback">Feedback</a>
+                                   <a href="/contactus">Contact us</a>  
+                                   <a href="/admin">Admin login</a>                            
+                            </div>                       
+                        </div>   
+                        <div class="header">
+                        </div>   
+                        <div class="bodyImg2" >
+
+                        </div>                           
+                       <style>
+                                /*Sign up form */
+                                /* Container for image and form */
+                                    .image-container {
+                                        position:relative; /* Needed for absolute positioning inside */
+                                        display:flex;
+                                    }
+
+                                                /* The background image */
+                                    .image-container img {
+                                    display: block;   
+                                    }
+                        </style>
+                        
+                       
+
+
+            <!--Body image-->
+            <style>
+                    
+                        .form-overlay2 {
+                              width: 100%;
+                              height: auto;
+                              display: grid;
+                              place-items: center;
+                              background-image: url('/public/images/careerBg.jpg');
+                              background-size:contain;  
+                              background-repeat: no-repeat;
+                              border-radius: 5px;
+                              border: 2px solid rgb(196, 144, 40);
+                              top: 200px; /* Distance from top of image */
+                              left: 270px; /* Distance from left of image */
+                              background-color:rgb(250, 245, 245);
+                              padding: 80px 47px ;
+                              border-radius: 8px;
+                              box-shadow: 6 8px 10x rgba(0,0,0,0.2);
+                        }
+
+                      
+                        .form-overlay2 input{
+                              background-color:  rgba(215, 130, 20, 0.684);
+                              padding: 10px;
+                              width: 888px;
+                              border:5;
+                              border-radius: 5px;
+                              outline: none;
+                              margin-bottom: 12px;
+
+
+                       } 
+                       
+                                                 
+                </style>
+
+
+                <!--Social media connection -->
+                <style>
+                        .text-overlay {
+                              position: absolute;
+                              height: 100%;
+                              width:20%;
+                              top: 10px; /* Distance from top of image */
+                              left: 10px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+                              box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                        }
+                        .sm_icon {
+                          position: absolute;
+                              height: 20%;
+                              width:15%;
+                              top: 20px; /* Distance from top of image */
+                              left: 3px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-color: aliceblue;
+                          }
+
+                          .sm_icon1{
+                            position: absolute;
+                              height: 20%;
+                              width:15%;
+                              top: 20px; /* Distance from top of image */
+                              left: 42px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+                          }
+                              .sm_icon2{
+                            position: absolute;
+                              height: 20%;
+                              width:15%;
+                              top: 20px; /* Distance from top of image */
+                              left: 82px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+
+                          }
+                </style>
+
+     <!--order list table design -->
+               
+               
+    <title>Users Table</title>
+    <style>
+        table { border-collapse: collapse; width: 80%; margin: 20px auto; }
+        th, td { border: 2px solid #e9890a; background-color:#e9880a70; padding: 8px; text-align: left; }
+        th { background-color: #f6a90f; }
+        h2 { text-align: center; }
+    </style>
+    <style>
+        table.table2 { border-collapse: collapse; width: 80%; margin: 50px auto; }
+        table.table2 th { border: 2px solid #415b5e53; background-color:#e9880a46; padding: 8px; text-align: left; }
+        table.table2 td { background-color: #77a9b4; }
+        table.table2 tr { background-color: #022e3776; }
+        h2 { text-align: center; }
+    </style>
+
+    <!--text and number box width setup-->
+            <style>
+                /* Apply to all text and number inputs */
+                    input[type="text"], input[type="number"] {
+                     width: 250px; /* Set desired width */
+                     padding: 2px; /* Inner spacing */
+                     font-size: 14px; /* Text size */
+                     box-sizing: border-box; /* Include padding/border in width */
+                    }
+
+                    input[type="date"], input[type="date"] {
+                     width: 250px; /* Set desired width */
+                     padding: 4px; /* Inner spacing */
+                     font-size: 14px; /* Text size */
+                     box-sizing: border-box; /* Include padding/border in width */
+                    }
+                    input[type="time"], input[type="time"] {
+                     width: 250px; /* Set desired width */
+                     padding: 4px; /* Inner spacing */
+                     font-size: 14px; /* Text size */
+                     box-sizing: border-box; /* Include padding/border in width */
+                    }
+                    /* Optional: make them even smaller */
+                    .small-input {
+                    width: 50px;
+                    }
+                    
+            </style>
+    </head>
+        
+<body>
+    <div class="form-overlay2">
+        <h2>Please add your choice and your selected dish will be added bottom of the page!</h2>
+    <div class="container"><br><br>
+                <!--Breakfast menu-->
+                            <h5>Breakfast Menu</h5>
+                                 <table border="1" id="userTable">
+                                     <thead>
+                                       <tr>
+                                
+                                            <th>Dish Name</th>
+                                            <th>Price</th>
+                                            <th>Action</th>                      
+                                
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                   
+               
+
+<script>
+    let orderList = [];
+                      // Fetch data from backend API
+                         fetch('http://localhost:3000/data')
+                            .then(response => {
+                             if (!response.ok) throw new Error('Network response was not ok');
+                             return response.json();
+                             })
+                              .then(data => {
+                               const tableBody = document.querySelector('#userTable tbody');
+                                 tableBody.innerHTML = ''; // Clear existing rows
+
+                                     data.forEach(user => {
+                                         const row = `<tr>
+                                             <td>${user.dishName}</td>
+                                             <td>${user.price}</td>
+                                             <td><button onclick="transferRow(this)">Add</button></td>                      
+                                         </tr>`;
+                                         tableBody.innerHTML += row;
+                                     });
+                                 })
+                                .catch(error => console.error('Error fetching data:', error));
+                
+                    /**
+                    * Transfers a row from the source table to the destination table.
+                    */
+                     function transferRow(btn) {
+                     try {
+                            // Get the row where the button was clicked
+
+                                 const row = btn.closest("tr");
+                                 if (!row)
+                                 {
+                                    console.error("No row found for the clicked button.");
+                                    return;
+                                }
+                            // Get cell values (excluding the last cell with the button)
+                                const cells = row.querySelectorAll("td");
+                                 if (cells.length < 2) 
+                                {
+                                     console.error("Row does not have enough data cells.");
+                                    return;
+                                }
+                                     const dishName = cells[0].textContent.trim();
+                                     const price = cells[1].textContent.trim();
+
+                             // Create a new row in the destination table
+                                    const destTableBody = 
+                                    document.getElementById("destinationTable").querySelector("tbody");
+                                    const newRow = destTableBody.insertRow();
+                                    const dishNameCell = newRow.insertCell(0);
+                                    const priceCell = newRow.insertCell(1);
+                                    const actionCell = newRow.insertCell(2);
+                                    dishNameCell.textContent = dishName;
+                                    priceCell.textContent = price;
+                                    actionCell.innerHTML = '<button onclick="deleteRow(this)">Remove</button>';
+                        } 
+                        
+                     
+                                    catch (error) {
+                                    console.error("Error transferring row:", error);
+                        }
+                    }
+
+                        function deleteRow(btn) {
+                         try {
+                            // Get the row where the button was clicked
+                                    const row = btn.closest("tr");
+                                    if (!row) {
+                                     console.error("No row found for the clicked button.");
+                                    return;
+                                    }
+                            // Remove the row from the table
+                                    row.remove();
+                                     } catch (error) {
+                                      console.error("Error deleting row:", error);
+                                    }
+                    }
+// Render order list table
+                        function renderOrderTable() {
+                                    const tbody = document.querySelector("#destinationTable tbody");
+                                    tbody.innerHTML = "";
+                                    let total = 0;
+                                    orderList.forEach((item, index) => {
+                                    total += item.price;
+                                    const row = `
+                                    <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.price.toFixed(2)}</td>
+                                    <td><button onclick="removeFromOrder(${index})">Remove</button></td>
+                                    </tr>
+                                    `;
+                                    tbody.innerHTML += row;
+                                    });
+                                    document.getElementById("grandTotal").innerText = total.toFixed(2);
+                                    }
+                                    // Submit order to backend
+                                    function submitOrder() {
+                                    if (orderList.length === 0) {
+                                    alert("Your order list is empty!");
+                                    return;
+                                    }
+                                    fetch("http://localhost:3000/submit-order", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ orders: orderList })
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                    alert(data.message);
+                                    orderList = [];
+                                    renderOrderTable();
+                                    })
+                                    .catch(err => alert("Error: " + err));
+                        }
+
+
+
+       
+</script>
+
+
+
+
+<!--Lunch menu-->
+                    <h5>Lunch Menu</h5>
+                         <table border="1" id="userTable1">
+                              <thead>
+                                <tr>
+                                    <th>Dish Name</th>
+                                    <th>Price</th>
+                                    <th>Action</th>   
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                    </table><br>
+<script>
+                         // Fetch data from backend API
+                         fetch('http://localhost:3000/data1')
+                              .then(response => {
+                                   if (!response.ok) throw new Error('Network response was not ok');
+                                   return response.json();
+                                })
+                              .then(data1 => {
+                                     const tableBody = document.querySelector('#userTable1 tbody');
+                                     tableBody.innerHTML = ''; // Clear existing rows
+
+                                     data1.forEach(user => {
+                                          const row = `<tr>
+                                           <td>${user.dishName}</td>
+                                           <td>${user.price}</td>
+                                           <td><button onclick="transferRow(this)">Add</button></td> 
+                                           </tr>`;
+                                     tableBody.innerHTML += row;
+                                    });
+                                })
+                            .catch(error => console.error('Error fetching data:', error));
+
+
+                            /**
+                    * Transfers a row from the source table to the destination table.
+                    */
+                     function transferRow(btn) {
+                     try {
+                            // Get the row where the button was clicked
+
+                                 const row = btn.closest("tr");
+                                 if (!row)
+                                 {
+                                    console.error("No row found for the clicked button.");
+                                    return;
+                                }
+                            // Get cell values (excluding the last cell with the button)
+                                const cells = row.querySelectorAll("td");
+                                 if (cells.length < 2) 
+                                {
+                                     console.error("Row does not have enough data cells.");
+                                    return;
+                                }
+                                     const dishName = cells[0].textContent.trim();
+                                     const price = cells[1].textContent.trim();
+
+                             // Create a new row in the destination table
+                                    const destTableBody = 
+                                    document.getElementById("destinationTable").querySelector("tbody");
+                                    const newRow = destTableBody.insertRow();
+                                    const dishNameCell = newRow.insertCell(0);
+                                    const priceCell = newRow.insertCell(1);
+                                    const actionCell = newRow.insertCell(2);
+                                    dishNameCell.textContent = dishName;
+                                    priceCell.textContent = price;
+                                    actionCell.innerHTML = '<button onclick="deleteRow(this)">Remove</button>';
+                        } 
+                        
+                     
+                                    catch (error) {
+                                    console.error("Error transferring row:", error);
+                        }
+                    }
+
+                        function deleteRow(btn) {
+                         try {
+                            // Get the row where the button was clicked
+                                    const row = btn.closest("tr");
+                                    if (!row) {
+                                     console.error("No row found for the clicked button.");
+                                    return;
+                                    }
+                            // Remove the row from the table
+                                    row.remove();
+                                     } catch (error) {
+                                      console.error("Error deleting row:", error);
+                                    }
+                    }
+                    // Render order list table
+                        function renderOrderTable() {
+                                    const tbody = document.querySelector("#destinationTable tbody");
+                                    tbody.innerHTML = "";
+                                    let total = 0;
+                                    orderList.forEach((item, index) => {
+                                    total += item.price;
+                                    const row = `
+                                    <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.price.toFixed(2)}</td>
+                                    <td><button onclick="removeFromOrder(${index})">Remove</button></td>
+                                    </tr>
+                                    `;
+                                    tbody.innerHTML += row;
+                                    });
+                                    document.getElementById("grandTotal").innerText = total.toFixed(2);
+                                    }
+                                    // Submit order to backend
+                                    function submitOrder() {
+                                    if (orderList.length === 0) {
+                                    alert("Your order list is empty!");
+                                    return;
+                                    }
+                                    fetch("http://localhost:3000/submit-order", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ orders: orderList })
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                    alert(data.message);
+                                    orderList = [];
+                                    renderOrderTable();
+                                    })
+                                    .catch(err => alert("Error: " + err));
+                        }
+    
+</script>
+
+                <!--Dinner menu-->
+                    <h5>Dinner Menu</h5>
+                         <table border="1" id="userTable2">
+                              <thead>
+                                <tr>
+                                    <th>Dish Name</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </tr>//
+                            </thead>
+                            <tbody></tbody>
+                    </table><br>
+<script>
+                         // Fetch data from backend API
+                         fetch('http://localhost:3000/data2')
+                              .then(response => {
+                                   if (!response.ok) throw new Error('Network response was not ok');
+                                   return response.json();
+                                })
+                              .then(data2 => {
+                                     const tableBody = document.querySelector('#userTable2 tbody');
+                                     tableBody.innerHTML = ''; // Clear existing rows
+
+                                     data2.forEach(user => {
+                                          const row = `<tr>
+                                           <td>${user.dishName}</td>
+                                           <td>${user.price}</td>
+                                           <td><button onclick="transferRow(this)">Add</button></td>
+                                           </tr>`;
+                                     tableBody.innerHTML += row;
+                                    });
+                                })
+                            .catch(error => console.error('Error fetching data:', error));
+                              /**
+                    * Transfers a row from the source table to the destination table.
+                    */
+                     function transferRow(btn) {
+                     try {
+                            // Get the row where the button was clicked
+
+                                 const row = btn.closest("tr");
+                                 if (!row)
+                                 {
+                                    console.error("No row found for the clicked button.");
+                                    return;
+                                }
+                            // Get cell values (excluding the last cell with the button)
+                                const cells = row.querySelectorAll("td");
+                                 if (cells.length < 2) 
+                                {
+                                     console.error("Row does not have enough data cells.");
+                                    return;
+                                }
+                                     const dishName = cells[0].textContent.trim();
+                                     const price = cells[1].textContent.trim();
+
+                             // Create a new row in the destination table
+                                    const destTableBody = 
+                                    document.getElementById("destinationTable").querySelector("tbody");
+                                    const newRow = destTableBody.insertRow();
+                                    const dishNameCell = newRow.insertCell(0);
+                                    const priceCell = newRow.insertCell(1);
+                                    const actionCell = newRow.insertCell(2);
+                                    dishNameCell.textContent = dishName;
+                                    priceCell.textContent = price;
+                                    actionCell.innerHTML = '<button onclick="deleteRow(this)">Remove</button>';
+                        } 
+                        
+                     
+                                    catch (error) {
+                                    console.error("Error transferring row:", error);
+                        }
+                    }
+
+                        function deleteRow(btn) {
+                         try {
+                            // Get the row where the button was clicked
+                                    const row = btn.closest("tr");
+                                    if (!row) {
+                                     console.error("No row found for the clicked button.");
+                                    return;
+                                    }
+                            // Remove the row from the table
+                                    row.remove();
+                                     } catch (error) {
+                                      console.error("Error deleting row:", error);
+                                    }
+                    }
+
+                    // Render order list table
+                        function renderOrderTable() {
+                                    const tbody = document.querySelector("#destinationTable tbody");
+                                    tbody.innerHTML = "";
+                                    let total = 0;
+                                    orderList.forEach((item, index) => {
+                                    total += item.price;
+                                    const row = `
+                                    <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.price.toFixed(2)}</td>
+                                    <td><button onclick="removeFromOrder(${index})">Remove</button></td>
+                                    </tr>
+                                    `;
+                                    tbody.innerHTML += row;
+                                    });
+                                    document.getElementById("grandTotal").innerText = total.toFixed(2);
+                                    }
+                                    // Submit order to backend
+                                    function submitOrder() {
+                                    if (orderList.length === 0) {
+                                    alert("Your order list is empty!");
+                                    return;
+                                    }
+                                    fetch("http://localhost:3000/submit-order", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ orders: orderList })
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                    alert(data.message);
+                                    orderList = [];
+                                    renderOrderTable();
+                                    })
+                                    .catch(err => alert("Error: " + err));
+                        }
+    
+</script>
+                    <!--Beverage menu-->
+                    <h5>Beverage Menu</h5>
+                         <table border="1" id="userTable3">
+                              <thead>
+                                <tr>
+                                    <th>Beverage Name</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                    </table><br>
+                    
+<script>
+                         // Fetch data from backend API
+                         fetch('http://localhost:3000/data3')
+                              .then(response => {
+                                   if (!response.ok) throw new Error('Network response was not ok');
+                                   return response.json();
+                                })
+                              .then(data3 => {
+                                     const tableBody = document.querySelector('#userTable3 tbody');
+                                     tableBody.innerHTML = ''; // Clear existing rows
+
+                                     data3.forEach(user => {
+                                          const row = `<tr>
+                                           <td>${user.dishName}</td>
+                                           <td>${user.price}</td>
+                                           <td><button onclick="transferRow(this)">Add</button></td>
+                                           </tr>`;
+                                     tableBody.innerHTML += row;
+                                    });
+                                })
+                            .catch(error => console.error('Error fetching data:', error));
+
+                             /**
+                    * Transfers a row from the source table to the destination table.
+                    */
+                     function transferRow(btn) {
+                     try {
+                            // Get the row where the button was clicked
+
+                                 const row = btn.closest("tr");
+                                 if (!row)
+                                 {
+                                    console.error("No row found for the clicked button.");
+                                    return;
+                                }
+                            // Get cell values (excluding the last cell with the button)
+                                const cells = row.querySelectorAll("td");
+                                 if (cells.length < 2) 
+                                {
+                                     console.error("Row does not have enough data cells.");
+                                    return;
+                                }
+                                     const dishName = cells[0].textContent.trim();
+                                     const price = cells[1].textContent.trim();
+
+                             // Create a new row in the destination table
+                                    const destTableBody = 
+                                    document.getElementById("destinationTable").querySelector("tbody");
+                                    const newRow = destTableBody.insertRow();
+                                    const dishNameCell = newRow.insertCell(0);
+                                    const priceCell = newRow.insertCell(1);
+                                    const actionCell = newRow.insertCell(2);
+                                    dishNameCell.textContent = dishName;
+                                    priceCell.textContent = price;
+                                    actionCell.innerHTML = '<button onclick="deleteRow(this)">Remove</button>';
+                        } 
+                        
+                     
+                                    catch (error) {
+                                    console.error("Error transferring row:", error);
+                        }
+                    }
+
+                        function deleteRow(btn) {
+                         try {
+                            // Get the row where the button was clicked
+                                    const row = btn.closest("tr");
+                                    if (!row) {
+                                     console.error("No row found for the clicked button.");
+                                    return;
+                                    }
+                            // Remove the row from the table
+                                    row.remove();
+                                     } catch (error) {
+                                      console.error("Error deleting row:", error);
+                                    }
+                    }
+// Render order list table
+                        
+                                            function submitOrderList() {
+                                            const table = document.getElementById("destinationTable").tBodies[0];
+                                            const data = [];
+
+                                            const customerName = document.getElementById("customerName").value.trim();
+                                            const customerPhone = document.getElementById("customerPhone").value.trim();
+                                            const pickupDate = document.getElementById("date").value;
+                                            const pickupTime = document.getElementById("time").value;
+
+                                            // Validate customer info
+                                            if (!customerName || !customerPhone) {
+                                                alert("Please enter customer name and phone number.");
+                                                return;
+                                            }
+
+                                            // Validate pickup date/time
+                                            if (!pickupDate || !pickupTime) {
+                                                alert("Please select pickup date and time.");
+                                                return;
+                                            }
+
+                                            // Collect order items from table
+                                            for (let row of table.rows) {
+                                                const dishName = row.cells[0].textContent.trim();
+                                                const price = parseFloat(row.cells[1].textContent.trim());
+
+                                                if (dishName && !isNaN(price)) {
+                                                data.push({
+                                                    item_name: dishName,
+                                                    item_price: price
+                                                });
+                                                }
+                                            }
+
+                                            if (data.length === 0) {
+                                                alert("Order list is empty!");
+                                                return;
+                                            }
+
+                                            // Send to backend
+                                            fetch("/save-order", {
+                                                method: "POST",
+                                                headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify({
+                                                customer_name: customerName,
+                                                customer_phone: customerPhone,
+                                                date: pickupDate,     // pickup date
+                                                time: pickupTime,     // pickup time
+                                                rows: data            // order items
+                                                })
+                                            })
+                                                .then(res => res.json())
+                                                .then(response => {
+                                                alert(response.message);
+                                                })
+                                                .catch(err => {
+                                                console.error("Error:", err);
+                                                alert("Failed to save order.");
+                                                });
+                                            }
+
+
+
+
+                                                function loadOrders() {
+                                                            fetch("/get-orders")
+                                                            .then(res => res.json())
+                                                            .then(data => {
+                                                            const tbody = 
+                                                            document.getElementById("destinationTable").tBodies[0];
+                                                            tbody.innerHTML = "";
+                                                            data.forEach(order => {
+                                                            const row = tbody.insertRow();
+                                                            row.insertCell(0).textContent = order.id;
+                                                            row.insertCell(1).textContent = order.customer_name;
+                                                            row.insertCell(2).textContent = order.customer_phone;
+                                                            row.insertCell(3).textContent = order.dishName;
+                                                            row.insertCell(4).textContent = order.price.toFixed(2);
+                                                            row.insertCell(6).textContent = new
+                                                            Date(order.order_time).toLocaleString();
+                                                            });
+                                                            })
+                                                       
+                                                            .catch(err => console.error("Error loading orders:", err));
+                                                            }
+
+</script>
+<div class="form-overlay2">
+                     <h2>Your order list is here</h2>
+                     
+                        <table id="destinationTable">
+                            <h3>Customer Details</h3>
+                                            <label>Name: </label>
+                                            <input type="text" name="customerName" id="customerName" placeholder="Please type your name" width="440px"  required>
+                                            
+                                            <label>Phone: </label>
+                                            <input type="text" name="customerPhone" id="customerPhone" placeholder="Please type your contact number">
+
+                                            <label>Pickup date: </label>
+                                            <input type="date" id="date" name="date" date_format="dd/mm/yyyy" placeholder="Date"   required>
+                                            <label>Pickup time: </label>
+                                            <input type="time" id="time" name="time" placeholder="Time"   required>
+                                           
+                                            <br><br>
+                                <thead>
+                                <tr>
+                                <th>Dish Name</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- Rows added dynamically -->
+                                </tbody>
+                        </table>
+                                <button onclick="submitOrderList()">Submit Order</button>
+
+</div>
+
+
+                             
+
+</div>
+</div>   
+<!-- Sign up form -->  
+                        <div>            
+                            <div class="image-container">
+                                   <img class="img2" src="/public/images/bodyImg2.jpg">
+  
+                                            <form class="form-overlay" method="POST">
+                                                <h3>Sign Up</h3>
+                                                    <input type="text" name="name" id="name" placeholder="Your name"></br>
+                                                    <input type="email" name="email" id="email" placeholder="your email"></br>
+                                                    <button type="submit">Submit</button>
+                                            </form>
+
+                                                     <!--Social media connection -->
+                                                    <div class="text-overlay">
+                                                         <h6>Follow us on .....</h6>
+                                                            <a href="https://www.instagram.com" target="_blank">
+                                                               <img src="/public/images/instragram.png" class="sm_icon" >
+                                                            </a>
+
+                                                            <a href="https://www.facebook.com" target="_blank">
+                                                               <img src="/public/images/facebook.png" class="sm_icon1">
+                                                            </a> 
+
+                                                            <a href="https://www.facebook.com" target="_blank">
+                                                               <img src="/public/images/twiter.png" class="sm_icon2">
+                                                            </a>  
+                            </div>   
+                        </div>
+
+
+                        
+            
+                 
+
+                <!--footer-->
+                    <div class="footer">
+                     <p>&copy; My website , all rights reserved</p>
+                    </div>
+            
+        </body>
+        
+</html>
+

@@ -1,0 +1,513 @@
+<html>
+    <head>
+<%- include('partials/header1.ejs') %>
+        <!--<%- include('partials/navbar1.ejs') %> -->
+       <!--dropdown menu-->
+                        <div class="dropdown" >
+                              <button type="button" class="image-btn" onclick="toggleDropdown()"><img src="/public/images/dropdownBar.jpg" width="70" height="20"></button>
+                             <div class="content">
+                                   <a href="/">Home</a>
+                                   <a href="/menu">Menu</a>
+                                   <a href="/booking">Reservation</a>
+                                   <a href="/onlineOrder">Order online</a>
+                                   <a href="/gallery">Gallery</a>
+                                   <a href="/career1">Career</a> 
+                                   <a href="/feedback">Feedback</a>
+                                   <a href="/contactus">Contact us</a>  
+                                   <a href="/admin">Admin login</a>                       
+                            </div>                       
+                        </div>   
+                        <div class="header">
+                        </div>   
+                        <div class="bodyImg2" >
+
+                        </div>                           
+                       <style>
+                        /*Sign up form */
+                        /* Container for image and form */
+                             .image-container {
+                                 position:relative; /* Needed for absolute positioning inside */
+                                 display:flex;
+                             }
+
+                                          /* The background image */
+                             .image-container img {
+                             display: block;   
+                            }
+
+                        /* The form overlay */
+                             .form-overlay {
+                              position: absolute;
+                              height: 100%;
+                              width:20%;
+                              top: 10px; /* Distance from top of image */
+                              left: 800px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+                              box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                        }
+
+                         /* Form styling */
+                            .form-overlay input{
+                              background-color: rgba(250, 235, 215, 0.518);
+                              height: 20px;    
+                              padding: 0px;
+                              width: 220px;
+                              border-style:solid;
+
+                        }
+                             .form-overlay button {
+                                height: 20%;
+                                width: 30%;
+                                position:relative;
+                                border: none;
+                                float:right;
+                                background-color: rgba(250, 235, 215, 0.518);
+                        }
+                </style>
+
+
+            <!--Body image-->
+            <style>
+                    
+                        .form-overlay2 {
+                              width: 100%;
+                              height: auto;
+                              display: grid;
+                              place-items: center;
+                              background-image: url('/public/images/careerBg.jpg');
+                              background-size:contain;  
+                              background-repeat: no-repeat;
+                              border-radius: 5px;
+                              border: 2px solid rgb(196, 144, 40);
+                              top: 200px; /* Distance from top of image */
+                              left: 270px; /* Distance from left of image */
+                              background-color:rgb(250, 245, 245);
+                              padding: 80px 47px ;
+                              border-radius: 8px;
+                              box-shadow: 6 8px 10x rgba(0,0,0,0.2);
+                        }
+                                                 
+                </style>
+
+
+                <!--Social media connection -->
+                <style>
+                        .text-overlay {
+                              position: absolute;
+                              height: 100%;
+                              width:20%;
+                              top: 10px; /* Distance from top of image */
+                              left: 10px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+                              box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                        }
+                        .sm_icon {
+                          position: absolute;
+                              height: 20%;
+                              width:15%;
+                              top: 20px; /* Distance from top of image */
+                              left: 3px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-color: aliceblue;
+                          }
+
+                          .sm_icon1{
+                            position: absolute;
+                              height: 20%;
+                              width:15%;
+                              top: 20px; /* Distance from top of image */
+                              left: 42px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+                          }
+                              .sm_icon2{
+                            position: absolute;
+                              height: 20%;
+                              width:15%;
+                              top: 20px; /* Distance from top of image */
+                              left: 82px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+
+                          }
+                </style>
+
+                
+               
+    <title>Users Table</title>
+    <style>
+        table { border-collapse: collapse; width: 80%; margin: 20px auto;}
+        th, td { border: 2px solid #e9890a; background-color:#e9880a70; padding: 8px; text-align: left; }
+        th { background-color: #f6a90f; }
+        h2 { text-align: center; }
+    </style>
+
+    </head>
+        
+<body>
+    <div class="form-overlay2">
+    <div class="container"><br><br>
+      <h1>Welcome Admin <%= userName %></h1>
+
+<a href="/adminLogout"><h4>Logout</h4></a>
+
+<h4>Admin page</h4>
+        <!--Reservation request list -->
+                  <h2>Reservation request</h2>
+                    <table border="1" id="userTable4">
+                      <thead>
+                           <tr>
+                                
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Event</th>
+                                <th>Peoples</th>
+                                <th>Comments</th>
+                                
+                            </tr>
+                        </thead>
+                         <tbody></tbody>
+                    </table>
+                     <script>
+                      // Fetch data from backend API
+                         fetch('http://localhost:3000/data4')
+                            .then(response => {
+                             if (!response.ok) throw new Error('Network response was not ok');
+                             return response.json();
+                             })
+                              .then(data4 => {
+                               const tableBody = document.querySelector('#userTable4 tbody');
+                                 tableBody.innerHTML = ''; // Clear existing rows
+
+                                     data4.forEach(user => {
+                                         const row = `<tr>
+                                             <td>${user.fName},${user.lName}</td>
+                                             <td>${user.email}</td>
+                                             <td>${user.phone}</td>
+                                             <td>${user.date}</td>
+                                             <td>${user.time}</td>
+                                             <td>${user.event}</td>
+                                             <td>${user.number}</td>
+                                             <td>${user.comment}</td>
+                                         </tr>`;
+                                         tableBody.innerHTML += row;
+                                     });
+                                 })
+                                .catch(error => console.error('Error fetching data:', error));
+                 </script>
+
+        <!--Online order list -->
+
+           <h2>Online Orders</h2>
+
+<table id="ordersTable" border="1" cellpadding="8" width="100%">
+  <thead>
+    <tr>
+      <th>Customer details & dish name</th>
+      <th>Price</th>
+      <th>Order date</th>
+      <th>Order time</th>
+      <th>Pickup date</th>
+      <th>Pickup time</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+
+  //date format 
+  function formatDate(dateString) {
+  const d = new Date(dateString);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+  function loadOrders() {
+    fetch("/get-orders")
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector("#ordersTable tbody");
+        tbody.innerHTML = "";
+
+        const grouped = {};
+
+        // Group by customer phone
+        data.forEach(order => {
+          if (!grouped[order.customer_phone]) {
+            grouped[order.customer_phone] = {
+              name: order.customer_name,
+              phone: order.customer_phone,
+              items: []
+            };
+          }
+
+          grouped[order.customer_phone].items.push({
+            dish: order.dishName,
+            price: order.price,
+            orderdate: order.order_date,
+            ordertime: order.order_time,
+            pickupdate: order.date,
+            pickuptime: order.time
+          });
+        });
+
+        // Render grouped rows
+        Object.values(grouped).forEach(customer => {
+          // Customer header row
+          const headerRow = tbody.insertRow();
+          headerRow.innerHTML = `
+            <td colspan="6" style="
+              font-weight:bold;
+              background:#f0f0f0;
+              padding:10px;
+              font-size:18px;
+            ">
+              ${customer.name} (${customer.phone})
+            </td>
+          `;
+
+          // Each product row
+          customer.items.forEach(item => {
+            const row = tbody.insertRow();
+
+            row.insertCell(0).textContent = item.dish;
+            row.insertCell(1).textContent = item.price.toFixed(2);
+            row.insertCell(2).textContent = formatDate(item.orderdate);
+            row.insertCell(3).textContent = item.ordertime;
+            row.insertCell(4).textContent = formatDate(item.pickupdate);
+            row.insertCell(5).textContent = item.pickuptime;
+          });
+        });
+      })
+      .catch(err => console.error("Error loading orders:", err));
+  }
+
+  loadOrders();
+</script>
+
+
+
+
+
+               
+<!-- Guest Feedback Section -->
+           <h2>Guest Feedback</h2>
+                    <table border="1" id="userTable5">
+                      <thead>
+                           <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Quality</th>
+                                <th>Service</th>
+                                <th>Experience</th>
+                                <th>Comments</th>
+                                
+                            </tr>
+                        </thead>
+                         <tbody></tbody>
+                    </table>
+
+                <script>
+                      // Fetch data from backend API
+                         fetch('http://localhost:3000/data5')
+                            .then(response => {
+                             if (!response.ok) throw new Error('Network response was not ok');
+                             return response.json();
+                             })
+                              .then(data5 => {
+                               const tableBody = document.querySelector('#userTable5 tbody');
+                                 tableBody.innerHTML = ''; // Clear existing rows
+
+                                     data5.forEach(user => {
+                                         const row = `<tr>
+                                             
+                                             <td>${user.Name}</td>
+                                             <td>${user.email}</td>
+                                             <td>${user.phone}</td>
+                                             <td>${user.date}</td>
+                                             <td>${user.time}</td>
+                                             <td>${user.quality}</td>
+                                             <td>${user.service}</td>
+                                             <td>${user.experience}</td>
+                                             <td>${user.comment}</td>
+                                         </tr>`;
+                                         tableBody.innerHTML += row;
+                                     });
+                                 })
+                                .catch(error => console.error('Error fetching data:', error));
+                 </script>
+<!-- Guest contactus Section -->
+           <h2>Guest communication</h2>
+                    <table border="1" id="userTable6">
+                      <thead>
+                           <tr>
+                                
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Subject</th>
+                                <th>Message</th>
+                                                                
+                            </tr>
+                        </thead>
+                         <tbody></tbody>
+                    </table>
+                <!-- <script src="app.js"></script> -->
+                <script>
+                      // Fetch data from backend API
+                         fetch('http://localhost:3000/data6')
+                            .then(response => {
+                             if (!response.ok) throw new Error('Network response was not ok');
+                             return response.json();
+                             })
+                              .then(data6 => {
+                               const tableBody = document.querySelector('#userTable6 tbody');
+                                 tableBody.innerHTML = ''; // Clear existing rows
+
+                                     data6.forEach(user => {
+                                         const row = `<tr>
+                                             
+                                             <td>${user.name}</td>
+                                             <td>${user.email}</td>
+                                             <td>${user.phone}</td>
+                                             <td>${user.subject}</td>
+                                             <td>${user.message}</td>
+                                            
+                                         </tr>`;
+                                         tableBody.innerHTML += row;
+                                     });
+                                 })
+                                .catch(error => console.error('Error fetching data:', error));
+                 </script>
+
+
+
+              <!-- Subscription record  -->
+           <h2>Subscription</h2>
+                    <table border="1" id="userTable9">
+                      <thead>
+                           <tr>
+                                
+                                <th>Name</th>
+                                <th>Email</th>
+                                                                                                
+                            </tr>
+                        </thead>
+                         <tbody></tbody>
+                    </table>
+                <!-- <script src="app.js"></script> -->
+                <script>
+                      // Fetch data from backend API
+                         fetch('http://localhost:3000/data9')
+                            .then(response => {
+                             if (!response.ok) throw new Error('Network response was not ok');
+                             return response.json();
+                             })
+                              .then(data9 => {
+                               const tableBody = document.querySelector('#userTable9 tbody');
+                                 tableBody.innerHTML = ''; // Clear existing rows
+
+                                     data9.forEach(user => {
+                                         const row = `<tr>
+                                             
+                                             <td>${user.name}</td>
+                                             <td>${user.email}</td>
+                                             
+                                            
+                                         </tr>`;
+                                         tableBody.innerHTML += row;
+                                     });
+                                 })
+                                .catch(error => console.error('Error fetching data:', error));
+                 </script>
+
+                            
+                                                 
+  <!-- job list-->                                    
+  <a href="/list" style="color:red;">
+    <h2>Job application list</h2>
+  </a>
+<br>
+
+<!--Edit gallery-->
+ <a href="/editGallery" style="color:red;">
+    <h2>Edit photo gallery </h2>
+  </a>
+<!-- Edit or add menu -->
+  <a href="/insertMenu" style="color:red;">
+    <h2>Insert or Edit menu items  </h2>
+  </a>
+
+
+
+                                    
+
+
+ 
+
+
+              
+
+
+</div>
+</div>   
+<!-- Sign up form -->  
+                        <div>            
+                            <div class="image-container">
+                                   <img class="img2" src="/public/images/bodyImg2.jpg">
+  
+                                            <form class="form-overlay" >
+                                                 <h3>Sign Up</h3>
+                                                 <input type="text" placeholder="Name" required>
+                                                 <input type="email" placeholder="Email" required>
+                                                 <button type="submit">Submit</button>
+                                            </form>
+
+                                                     <!--Social media connection -->
+                                                    <div class="text-overlay">
+                                                         <h6>Follow us on .....</h6>
+                                                            <a href="https://www.instagram.com" target="_blank">
+                                                               <img src="/public/images/instragram.png" class="sm_icon" >
+                                                            </a>
+
+                                                            <a href="https://www.facebook.com" target="_blank">
+                                                               <img src="/public/images/facebook.png" class="sm_icon1">
+                                                            </a> 
+
+                                                            <a href="https://www.facebook.com" target="_blank">
+                                                               <img src="/public/images/twiter.png" class="sm_icon2">
+                                                            </a>  
+                            </div>   
+                        </div>
+
+
+                        
+            
+                 
+
+                <!--footer-->
+                    <div class="footer">
+                     <p>&copy; My website , all rights reserved</p>
+                    </div>
+            
+        </body>
+        
+</html>
+
+

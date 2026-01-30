@@ -1,0 +1,87 @@
+<html>
+    <head>
+        <%- include('partials/header1.ejs') %>
+        <meta charset="UTF-8">
+ <title>Image Gallery Table</title>
+ <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            table-layout: fixed; /* Prevents stretching */
+            width: auto; /* Only as wide as needed */
+        }
+        td {
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ccc;
+            width: 54px; /* Image width (150px) + padding/border */
+        }
+        img {
+            width: 550px; /* Fixed image width */
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            display: block;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    </head>
+    
+        <body>
+            <%- include('partials/navbar1.ejs') %>
+            Html<!DOCTYPE html>
+<html>
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>View Uploaded Images</title>
+</head>
+
+<body>
+ <h2>Dynamic Image Gallery</h2>
+ <div class="table">
+ <table class="table">
+ <tbody id="imageTableBody">
+
+ </tbody>
+ </table>
+</div>
+ 
+ <script>
+ fetch('http://localhost:3000/images')
+ .then(res => res.json())
+ .then(images => {
+ const tableBody = document.getElementById('imageTableBody');
+ let row;
+ images.forEach((img, index) => {
+ // Start a new row every 3 images
+ if (index % 3 === 0) {
+ row = document.createElement('tr');
+ tableBody.appendChild(row);
+ }
+ const cell = document.createElement('td');
+ cell.innerHTML = `
+ <img src="${img.image}" alt="${img.name}">
+ <br>
+ ${img.title}
+ `;
+ row.appendChild(cell);
+ });
+ })
+ .catch(err => console.error('Error loading images:', err));
+ </script>
+</body>
+</html>
+
+        </body>
+</html>

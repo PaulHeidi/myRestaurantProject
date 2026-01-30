@@ -1,0 +1,910 @@
+var express = require('express'); 
+var app = express(); 
+
+var session = require('express-session');
+var conn = require ('./dbConfig');
+const { error } = require('console');
+const multer = require('multer');
+const mysql = require('mysql2');
+const path = require('path');
+const fs = require('fs');
+const { get } = require('http');
+const cors = require('cors');
+const { title } = require('process');
+app.use(cors()); // Allow cross-origin requests
+
+// use this two lines for insert subscription data from gallery page 
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.json());
+
+app.use(cors());
+
+
+app.set('view engine','ejs'); 
+
+//login session time setup 
+app.use(session({
+    secret: 'yoursecret',
+    resave: true,
+    saveUninitialized: true,
+    rolling: true,
+    cookie: {
+        maxAge: 2 * 60 * 1000
+    }
+}));
+
+
+//user authentiation page 
+app.get('/adminPage', isAdminLoggedIn, function(req, res) {
+    res.render('adminPage.ejs', { userName: req.session.userName });
+});
+//Middleware
+function isAdminLoggedIn(req, res, next) {
+    if (req.session && req.session.loggedin) {
+        next();
+    } else {
+        res.redirect('/adminLogin?msg=loginRequired');
+    }
+}
+
+
+/*Login page */ 
+app.get('/adminLogin', function(req, res) {
+    let message = null;
+
+    if (req.query.msg === 'loginRequired') {
+        message = "Your session has expired. Please log in again.";
+    }
+
+    res.render('adminLogin.ejs', { error: message });
+});
+
+
+   
+
+app.post('/adminLogin', function(req, res) {
+    let userName = req.body.username;
+    let password = req.body.password;
+
+    conn.query(
+        'SELECT * FROM adminRegister WHERE userName = ? AND password = ?',
+        [userName, password],
+        function(error, results) {
+            if (error) throw error;
+
+            if (results.length > 0) {
+                req.session.loggedin = true;
+                req.session.userName = userName;
+                res.redirect('/adminPage');
+            } else {
+                res.render('adminLogin.ejs', { error: 'Incorrect username or password!' });
+            }
+        }
+    );
+});
+// logout authentiation 
+app.get('/adminLogout', function(req, res) {
+    req.session.destroy(() => {
+        res.redirect('/adminLogin');
+    });
+});
+
+
+
+
+
+
+
+app.use(cors());
+// Multer setup (store file in memory)
+
+const upload = multer({ storage: multer.memoryStorage() });
+
+
+//multer setup 
+//const multer = require('multer'); 
+//change for career page 
+//const storage = multer.diskStorage({ destination: (req, file, cb) => cb(null, 'uploads/'), filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname) }); 
+//const upload = multer({ storage });
+
+// Upload route
+
+app.post('/uploadImage', upload.single('image'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+    const imgtitle = req.body.imgtitle;
+    const name = req.file.originalname;
+    const imageData = req.file.buffer;
+
+    conn.query('INSERT INTO images (imgtitle, name, image) VALUES (?, ?, ?)', [imgtitle, name, imageData], (err) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Database error.');
+        }
+        res.send('Image uploaded and saved to MySQL!');
+    });
+});
+
+// Retrieve images route
+app.get('/images', upload.single('image'), (req, res) => {
+    conn.query('SELECT id, imgtitle, name, image FROM images', (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Database error.');
+        }
+
+        // Convert binary data to Base64 for display in browser
+        const images = results.map(row => ({
+            id: row.id,
+            imgtitle: row.imgtitle,
+            image: `data:image/jpeg;base64,${row.image.toString('base64')}`
+        }));
+
+        res.json(images);
+    });
+});
+
+//app.listen(3000, () => console.log('🚀 Server running on http://localhost:3000'));
+
+
+//Delete image by ID
+app.delete('/images/:id', upload.single('image'), (req, res) => {
+ const imageId = req.params.id;
+ conn.query("DELETE FROM images WHERE id = ?", [imageId], (err, result) =>
+{
+ if (err) {
+ console.error(err);
+ return res.status(500).send('Database error.');
+ }
+ if (result.affectedRows === 0) {
+ return res.status(404).send('Image not found.');
+ }
+ res.send('Image deleted successfully!');
+ });
+});
+
+//Insert subscription data in gallery page 
+app.post('/gallery', function(req, res) {
+
+    const { name, email } = req.body; 
+    const sql = `INSERT INTO subscription (name, email) VALUES (?, ?)`; 
+    conn.query(sql, [name, email], function(err) { if (err) { 
+    console.error(err); return res.status(500).send("Database error"); } 
+    console.log("record inserted"); res.render("gallery"); 
+}); });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.use('/public', express.static('public')); 
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
+
+
+
+app.get('/', function (req, res){
+    res.render("home"); 
+}); 
+
+
+
+
+   
+
+
+
+
+
+
+
+//Users can access this if they are logged in
+app.get('/membersOnly', function (req,res, next){
+    if (req.session.loggedin){
+        res.render('membersOnly');
+    }
+    else {
+        res.send('Please login to view this page!');
+    }
+});
+
+
+
+
+
+//--------------------------------------------------------------Sample code -------------------------------------------------------//
+//Users can access this only if they are logged in
+app.get('/addMPs', function (req, res, next){
+    if (req.session.loggedin)
+    {
+        res.render('addMPs');
+
+    }
+    else 
+    {
+        res.send('Please login to view this page');
+    }
+});
+
+//--------------------------------------------------------------Sample code -------------------------------------------------------//
+
+//--------------------------------------------------------------Admin registration page---------------------------------------------//
+//input admin details //
+app.post('/adminRegister' , function(req, res, next){
+    var adminName = req.body.adminName;
+    var email = req.body.email;
+    var userName = req.body.userName;
+    var password = req.body.password;
+    var sql = `INSERT INTO adminRegister (adminName, email, userName, password) VALUES ("${adminName}", "${email}", "${userName}","${password}")`;
+        conn.query(sql, function (err, result){
+            if (err) throw err;
+            console.log('record inserted');
+            res.render('adminLogin', { error: null });
+
+;
+        });
+});
+
+
+//-----------------------------------------------------------------Contactus ----------------------------------------------------------//
+//input contactUs details 
+app.post('/contactUs', function(req, res) {
+  const { name, email, phone, subject, message } = req.body;
+
+  const sql = `
+    INSERT INTO contactUs (name, email, phone, subject, message)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  conn.query(sql, [name, email, phone, subject, message], function(err, result) {
+    if (err) {
+      console.error(err);
+      return res.json({ success: false, message: "Message sending failed" });
+    }
+
+    console.log("Contact message inserted!");
+
+    res.json({
+      success: true,
+      message: "Thank you! Your message has been sent successfully."
+    });
+  });
+});
+
+
+// insert subscription data in contactus page 
+app.post('/contact2', (req, res) => { 
+    const { name, email } = req.body; 
+    const sql = `INSERT INTO subscription (name, email) VALUES (?, ?)`; 
+    conn.query(sql, [name, email], (err) => { 
+        if (err) throw err; console.log('Subscription inserted!'); res.render('contactUs');
+     });
+ });
+
+
+
+
+
+
+
+
+
+
+// insert subscription data from home page 
+app.post('/' , function(req, res, next){
+    var name = req.body.name;
+    var email = req.body.email;
+    var sql = `INSERT INTO subscription (name, email) VALUES ("${name}", "${email}")`;
+        conn.query(sql, function (err, result){
+            if (err) throw err;
+            console.log('record inserted');
+            res.render('home');
+        });
+});
+
+
+
+
+//-----------------------------------------------------------Menu page---------------------------------------------------------------//
+
+//insert menu data
+app.post('/insertMenu', function(req, res, next) {
+    var catagory = req.body.catagory;
+    var dishName = req.body.dishName;
+    var description = req.body.description;
+    var price = req.body.price;
+
+    var sql = `INSERT INTO addMenu1 (catagory, dishName, description, price) VALUES (?, ?, ?, ?)`;
+
+    conn.query(sql, [catagory, dishName, description, price], function(err, result) {
+        if (err) throw err;
+
+        console.log('record inserted');
+        res.redirect('/insertMenu?success=1');
+
+    });
+});
+
+//delete menuitems 
+app.delete('/deleteMenu/:id', (req, res) => {
+    const id = req.params.id;
+
+    const sql = "DELETE FROM addmenu1 WHERE dishID = ?";
+    conn.query(sql, [id], (err, result) => {
+        if (err) throw err;
+
+        res.json({ message: "Menu item deleted successfully!" });
+    });
+});
+//EDIT MENU ITEM
+app.put('/updateMenu/:dishID', (req, res) => {
+    const id = req.params.dishID;
+    const { dishName, description, price } = req.body;
+
+    const sql = `
+        UPDATE addmenu1 
+        SET dishName = ?, description = ?, price = ?
+        WHERE dishID = ?
+    `;
+
+    conn.query(sql, [dishName, description, price, id], (err, result) => {
+        if (err) throw err;
+
+        res.json({ message: "Menu item updated successfully!" });
+    });
+});
+
+//Insert subscription in menu page 
+app.post('/menu' , function(req, res, next){
+    //var dishID = req.body.dishID;
+    var name = req.body.name;
+    var email = req.body.email;
+    var sql = `INSERT INTO subscription (name,email) VALUES ("${name}", "${email}")`;
+        conn.query(sql, function (err, result){
+            if (err) throw err;
+            console.log('record inserted');
+            res.render('menu');
+        });
+});
+//display menu data
+// API endpoint to fetch data
+app.get('/data', (req, res) => {
+    conn.query('SELECT * FROM addmenu1 where catagory = "breakfast"', (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results); // Send data as JSON
+    });
+});
+app.get('/data1', (req, res) => {
+    conn.query('SELECT * FROM addmenu1 where catagory = "lunch"', (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results); // Send data as JSON
+    });
+});
+app.get('/data2', (req, res) => {
+    conn.query('SELECT * FROM addmenu1 where catagory = "Dinner"', (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results); // Send data as JSON
+    });
+});
+app.get('/data3', (req, res) => {
+    conn.query('SELECT * FROM addmenu1 where catagory = "Beverage"', (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results); // Send data as JSON
+    });
+});
+//----------------------------------------------------------------End Menu page-------------------------------------------------//
+
+
+
+
+//----------------------------------------------------------------Booking page ---------------------------------------------------//
+
+//display booking data in admin page
+// API endpoint to fetch data
+app.get('/data4', (req, res) => {
+    conn.query('SELECT fName,lName,email,phone,date,time,event,number,comment FROM booking', (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results); // Send data as JSON
+    });
+});
+//insert booking information 
+
+        
+app.post('/booking', (req, res) => {
+  const { fName, lName, email, phone, date, time, event, number, comment } = req.body;
+
+  const sql = `
+    INSERT INTO booking (fName, lName, email, phone, date, time, event, number, comment)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  conn.query(sql, [fName, lName, email, phone, date, time, event, number, comment], (err) => {
+    if (err) {
+      return res.json({ success: false, message: "Booking failed" });
+    }
+
+    console.log("Booking inserted!");
+
+    res.json({
+      success: true,
+      message: "Your booking has been confirmed!"
+    });
+  });
+});
+
+//Insert subscription in booking page 
+app.post('/signup', (req, res) => {
+    const { name, email } = req.body;
+    const sql = `INSERT INTO subscription (name, email) VALUES (?, ?)`;
+
+    conn.query(sql, [name, email], (err) => {
+        if (err) throw err;
+
+        console.log('Subscription inserted!');
+        res.render('booking', { success: true });
+    });
+});
+
+//---------------------------------------------------------------------End Booking page -------------------------------------------------//
+
+//display feedback data in admin page
+// API endpoint to fetch data
+app.get('/data5', (req, res) => {
+    conn.query('SELECT * FROM feedback', (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results); // Send data as JSON
+    });
+});
+
+//display contactus data in admin page
+// API endpoint to fetch data
+app.get('/data6', (req, res) => {
+    conn.query('SELECT name,email,phone,subject,message FROM contactUs', (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results); // Send data as JSON
+    });
+});
+//display job application data in admin page
+// API endpoint to fetch data
+app.get('/data8', (req, res) => {
+    conn.query('SELECT name,email,cv_file,cover_file FROM applications', (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results); // Send data as JSON
+    });
+});
+
+//get subscription data 
+app.get('/data9', (req, res) => {
+    conn.query('SELECT name,email from subscription', (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results); // Send data as JSON
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+//insert feedback information 
+app.post('/feedback', function(req, res) {
+  const { Name, email, phone, date, time, quality, service, experience, comment } = req.body;
+
+  const sql = `
+    INSERT INTO feedback 
+    (Name, email, phone, date, time, quality, service, experience, comment)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  conn.query(
+    sql,
+    [Name, email, phone, date, time, quality, service, experience, comment],
+    function(err, result) {
+      if (err) {
+        console.error(err);
+        return res.json({ success: false, message: "Feedback submission failed" });
+      }
+
+      console.log("Feedback inserted!");
+
+      res.json({
+        success: true,
+        message: "Thank you! Your feedback has been submitted."
+      });
+    }
+  );
+});
+
+//insert subscription data in feedback page 
+app.post('/feedback2', (req, res) => { 
+    const { name, email } = req.body; 
+    const sql = `INSERT INTO subscription (name, email) VALUES (?, ?)`; 
+    conn.query(sql, [name, email], (err) => { 
+        if (err) throw err; console.log('Subscription inserted!'); res.render('feedback');
+     });
+ });
+
+
+
+
+
+//insert career data 
+// Upload route
+app.post('/career1', upload.fields([{ name: 'cv', maxCount: 1 },{ name: 'coverLetter', maxCount: 1 }]), (req, res) => {
+                console.log("📂 Files received:", req.files);
+                console.log("📄 Body received:", req.body);
+                        if (!req.files || !req.files.cv || !req.files.coverLetter) {
+                        return res.status(400).json('❌ Both CV and Cover Letter are required.');
+                        }
+
+                            const { name, email } = req.body;
+                            const cvFile = req.files.cv[0];
+                            const coverFile = req.files.coverLetter[0];
+                            const sql = ` INSERT INTO applications  (name, email, cv_filename, cv_file, cover_filename, cover_file)  VALUES (?, ?, ?, ?, ?, ?) `;
+                            conn.query(sql, [ name, email, cvFile.originalname, cvFile.buffer, coverFile.originalname, coverFile.buffer ], (err) => {
+                                    if (err) {
+                                    console.error("❌ MySQL Error:", err);
+                                    return res.status(500).json('Database error: ' + err.message);
+                                    }
+                                    //res.json('✅ Application submitted and files stored in database!');
+                                    res.json({ success: true });
+ });
+});
+
+
+
+//Insert subscription in career page 
+app.post('/career2', (req, res) => { 
+    const { name, email } = req.body; 
+    const sql = `INSERT INTO subscription (name, email) VALUES (?, ?)`; 
+    conn.query(sql, [name, email], (err) => { 
+        if (err) throw err; console.log('Subscription inserted!'); res.render('career1');
+     });
+ });
+
+
+ //sample for job application display
+// List all applicants
+app.get('/list', (req, res) => {
+    conn.query("SELECT id, name, email, submitted_at FROM applications ORDER BY submitted_at DESC", (err, results) => {
+        if (err) throw err;
+
+       let html = `
+        <h2>Applicants List</h2>
+        <table border="1" cellpadding="8">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Submitted At</th>
+                <th>CV</th>
+                <th>Cover Letter</th>
+            </tr>
+        `;
+
+        results.forEach(row => {
+            html += `
+            <tr>
+                <td>${row.id}</td>
+                <td>${row.name}</td>
+                <td>${row.email}</td>
+                <td>${row.submitted_at}</td>
+                <td><a href="/download/cv/${row.id}">Download CV</a></td>
+                <td><a href="/download/cover/${row.id}">Download Cover Letter</a></td>
+            </tr>
+            `;
+        });
+
+        html += `</table><br><a href="/adminPage";>⬅ Back to adminPage</a>`;
+        res.send(html);
+    });
+});
+
+// Download CV
+app.get('/download/cv/:id', (req, res) => {
+    conn.query("SELECT cv_filename, cv_file FROM applications WHERE id = ?", [req.params.id], (err, results) => {
+        if (err) throw err;
+        if (results.length === 0) return res.status(404).send('Not found');
+
+        res.setHeader('Content-Disposition', `attachment; filename="${results[0].cv_filename}"`);
+        res.send(results[0].cv_file);
+    });
+});
+
+// Download Cover Letter
+app.get('/download/cover/:id', (req, res) => {
+    conn.query("SELECT cover_filename, cover_file FROM applications WHERE id = ?", [req.params.id], (err, results) => {
+        if (err) throw err;
+        if (results.length === 0) return res.status(404).send('Not found');
+
+        res.setHeader('Content-Disposition', `attachment; filename="${results[0].cover_filename}"`);
+        res.send(results[0].cover_file);
+    });
+});
+app.get('/list', function (req, res){
+    res.render("list"); 
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//online order data input
+// API endpoint to fetch countries
+app.get('/addmenu', (req, res) => {
+    const sql = 'SELECT dishID,dishName FROM addmenu ORDER BY dishName ASC';
+    conn.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results);
+    });
+});
+
+//Insert subscription data in onlineorder page page 
+app.post('/onlineOrder' , function(req, res, next){
+    //var dishID = req.body.dishID;
+    var name = req.body.name;
+    var email = req.body.email;
+    var sql = `INSERT INTO subscription (name,email) VALUES ("${name}", "${email}")`;
+        conn.query(sql, function (err, result){
+            if (err) throw err;
+            console.log('record inserted');
+            res.render('onlineOrder');
+        });
+});
+
+
+
+
+
+
+//display online order list in adminpage 
+app.get("/get-orders", (req, res) => {
+  const sql = `SELECT customer_name,customer_phone, dishName, price, order_date, order_time, date, time FROM orders ORDER BY customer_phone, order_date DESC`;
+
+  conn.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json(results);
+  });
+});
+ // Get all menu data
+app.post("/save-order", (req, res) => {
+  const { customer_name, customer_phone, rows, date, time } = req.body;
+
+  // Validate customer info
+  if (!customer_name || !customer_phone) {
+    return res.status(400).json({ message: "Customer name and phone are required" });
+  }
+
+  // Validate pickup date/time
+  if (!date || !time) {
+    return res.status(400).json({ message: "Please select pickup date and time" });
+  }
+
+  // Validate order items
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return res.status(400).json({ message: "Order list is empty" });
+  }
+
+  // Generate order placed date/time
+  const now = new Date();
+  const order_date = now.toISOString().split("T")[0];      // YYYY-MM-DD
+  const order_time = now.toTimeString().split(" ")[0];     // HH:MM:SS
+
+  // Build values for bulk insert
+  const values = rows.map(r => [
+    r.item_name,
+    parseFloat(r.item_price) || 0,
+    customer_name,
+    customer_phone,
+    date,         // pickup date
+    time,         // pickup time
+    order_date,   // order placed date
+    order_time    // order placed time
+  ]);
+
+  const sql = `
+    INSERT INTO orders 
+    (dishName, price, customer_name, customer_phone, date, time, order_date, order_time)
+    VALUES ?
+  `;
+
+  conn.query(sql, [values], (err, result) => {
+    if (err) {
+      console.error("Insert error:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    res.json({
+      message: "Thank you. Your order was placed successfully.",
+      inserted: result.affectedRows
+    });
+  });
+});
+
+
+
+
+
+
+
+
+
+//insert menu data
+app.post('/insertMenu' , function(req, res, next){
+    //var dishID = req.body.dishID;
+    var catagory = req.body.catagory;
+    var dishName = req.body.dishName;
+    var description = req.body.description;
+    var price = req.body.price;
+    var sql = `INSERT INTO addMenu1 (catagory, dishName, description, price) VALUES ("${catagory}", "${dishName}","${description}","${price}")`;
+        conn.query(sql, function (err, result){
+            if (err) throw err;
+            console.log('record inserted');
+            res.render('insertMenu');
+        });
+});
+
+
+
+
+
+
+
+app.get('/auckland', function (req, res){
+    res.render("auckland"); 
+});
+app.get('/', function (req, res){
+    res.render(""); 
+});
+
+
+app.get('/uploadImage', function (req, res){
+    res.render("uploadImage"); 
+});
+app.get('/displayImage', function (req, res){
+    res.render("displayImage"); 
+});
+
+app.get('/beaches', function (req, res){
+    res.render("beaches"); 
+});
+
+app.get('/booking', function (req, res){
+    res.render("booking"); 
+});
+
+app.get('/feedback', function (req, res){
+    res.render("feedback"); 
+});
+app.get('/contactUs', function (req, res){
+    res.render("contactUs"); 
+});
+app.get('/career', function (req, res){
+    res.render("career"); 
+});
+app.get('/career1', function (req, res){
+    res.render("career1"); 
+});
+app.get('/adminLogin', function (req, res){
+    res.render("adminLogin"); 
+});
+
+app.get('/adminLogin1', function (req, res){
+    res.render("adminLogin1"); 
+});
+app.get('/adminRegister', function (req, res){
+    res.render("adminRegister"); 
+});
+app.get('/forgotPass', function (req, res){
+    res.render("forgotPass"); 
+});
+app.get('/admin', function (req, res){
+    res.render("admin"); 
+});
+app.get('/addMenu', function (req, res){
+    res.render("addMenu"); 
+});
+app.get('/insertMenu', function (req, res){
+    res.render("insertMenu"); 
+});
+app.get('/logout' ,(req, res) =>{
+    req.session.destroy();
+    res.redirect('/');
+});
+app.get('/downloadImage' ,(req, res) =>{
+    res.render('downloadImage');
+});
+app.get('/listMps' ,(req, res) =>{
+    res.render('listMps');
+});
+
+app.get('/menu', function (req, res){
+    res.render("menu"); 
+});
+app.get('/adminPage', function (req, res){
+    res.render("adminPage"); 
+});
+app.get('/onlineOrder', function (req, res){
+    res.render("onlineOrder"); 
+});
+app.get('/display', function (req, res){
+    res.render("display"); 
+});
+app.get('/editgallery', function (req, res){
+    res.render("editgallery"); 
+});
+app.get('/gallery', function (req, res){
+    res.render("gallery"); 
+});
+app.get('/home', function (req, res){
+    res.render("home"); 
+});
+
+app.get('/uploadjob', function (req, res){
+    res.render("uploadjob"); 
+});
+    
+//testing upload image
+
+
+
+app.listen(3000); 
+console.log('Node app is running on port 3000');

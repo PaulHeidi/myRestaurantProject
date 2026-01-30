@@ -1,0 +1,139 @@
+<html>
+    <head>
+       <%- include('partials/header1.ejs') %>
+       <!--dropdown menu-->
+                        <div class="dropdown" >
+                              <button tupe="button" class="image-btn"><img src="/public/images/dropdownBar.jpg" width="70" height="20"></button>
+                             <div class="content">
+                                    <a href="/">Home</a>
+                                   <a href="/menu">Menu</a>
+                                   <a href="/booking">Reservation</a>
+                                   <a href="/onlineOrder">Order online</a>
+                                   <a href="/gallery">Gallery</a>
+                                   <a href="/career1">Career</a> 
+                                   <a href="/feedback">Feedback</a>
+                                   <a href="/contactus">Contact us</a> 
+                                   <a href="/admin">Admin login</a> 
+                                </div>
+                       </div>   
+                        <div class="header">
+                        </div>   
+                        <div class="bodyImg2" >
+
+                        </div>   
+
+
+                        <script
+                              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6myHzS10YXdcazAFalmXvDkrYCp5cLc8&libraries=maps,marker&v=weekly"
+                                      defer>
+                         </script>
+                        <!--google map stylesheet-->
+
+
+
+
+                 <style>
+                        /*Sign up form */
+                        /* Container for image and form */
+                             .image-container {
+                                 position: relative; /* Needed for absolute positioning inside */
+                                 display:flex;
+                             }
+
+                         /* The background image */
+                             .image-container img {
+                             display: block;   
+                            }
+
+
+                            
+                        
+                </style>
+
+              
+                                
+    </head>
+        
+    <body>
+    
+        <!--    <%- include('partials/navbar1.ejs') %> -->
+            <div class="container"><br><br>
+                <!-- About us %> -->             
+                <p1>About ---</p1><br>
+                <p style="color:#080808">
+                    Welcome to Heidi Kitchen, a culinary journey blending ecnt ancient traditions artiaty. Discover the heart of indo-fusion cuisine, where culinary excellence meets warm hospitality. Our story is one of passion, dedication, and a commitment to delivering an exceptional dining experience to our cherished guests. Our Journey
+                    At Heidi Kitchen began with a simple yet profound vision – to create a haven for food enthusiasts, a place where flavors come alive, and memories are made. Established in the year of 2025, we embarked on this culinary adventure with the aim of offering a unique blend of delectable cuisine, inviting ambiance, and impeccable service.
+                    Our Philosophy Culinary Excellence<br><br>
+                </p>
+
+                <p1>What's on at Heidi Kitchen ---</p1><br>
+                <p style="color:#080808">
+                    Always somethings going on at Heidi Kitchen. Stay up-to-date our latest events, promotions and news. <br><br>
+                </p>
+
+                <img class="img3" src="/public/images/bodyImg3.jpg" >
+                <img class="img4" src="/public/images/bodyImg4.jpg" >
+                 <img class="img5" src="/public/images/bodyImg5.jpg" ><br><br><br>
+                <p1>Location and Hours ---</p1><br>
+               <h5>
+                    Heidi Kitchen <br>
+                   3 Peregrine Crescent, Rolleston, Canterbury, 8023.<br>
+                   Ph: 02102450064<br>
+                   Monday to Friday <br>
+                   10am - midnight<br>
+                   Saturday and Sunday <br>
+                   11am to 10pm.
+               </h5>
+                  
+              <h5>Location map</h5> 
+             
+                         
+            </div>
+            <!-- google map setup-->
+             <div class="center-iframe">
+             <iframe  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2888.9424063294496!2d172.39358047428252!3d-43.607740771104226!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d321caefa4721ed%3A0x52d9275c46bed566!2s3%20Peregrine%20Crescent%2C%20Rolleston%207615%2C%20New%20Zealand!5e0!3m2!1sen!2sau!4v1763301812398!5m2!1sen!2sau" style="border: 3px solid black; box-shadow: 5px 15px 10px rgba(0,0,0,0.5) ;"  class="center-iframe"></iframe><br><br><br><br>
+             </div>
+
+             <div>
+                    <!-- Sign up form -->              
+                    <div class="image-container">
+                        <img class="img2" src="/public/images/bodyImg2.jpg">
+  
+                              <form class="form-overlay" action="/" method="post">
+                                 <h3>Sign Up</h3>
+                                     <input type="text" name="name" id="name" placeholder="Your name"></br>
+                                     <input type="email" name="email" id="email" placeholder="your email"></br>
+                                     <button type="submit">Submit</button>
+                              </form>
+
+                    <!--Social media connection -->
+                       <div class="text-overlay">
+                         <h6>Follow us on .....</h6>
+                        <a href="https://www.instagram.com" target="_blank">
+                            <img src="/public/images/instragram.png" class="sm_icon" >
+                        </a>
+
+                        <a href="https://www.facebook.com" target="_blank">
+                            <img src="/public/images/facebook.png" class="sm_icon1">
+                        </a> 
+
+                        <a href="https://www.facebook.com" target="_blank">
+                            <img src="/public/images/twiter.png" class="sm_icon2">
+                        </a>  
+                        </div>   
+                    </div>
+                
+            
+                 
+
+        <!--footer-->
+        <div class="footer">
+                <p>&copy; My website , all rights reserved</p>
+        </div>
+            
+        </body>
+        
+</html>
+
+
+

@@ -1,0 +1,114 @@
+<html>
+    <head>
+       <%- include('partials/header1.ejs') %>
+       <!--dropdown menu-->
+                        <div class="dropdown" >
+                              <button tupe="button" class="image-btn"><img src="/public/images/dropdownBar.jpg" width="70" height="20"></button>
+                             <div class="content">
+                                    <a href="/">Home</a>
+                                   <a href="/menu">Menu</a>
+                                   <a href="/booking">Reservation</a>
+                                   <a href="/onlineOrder">Order online</a>
+                                   <a href="/gallery">Gallery</a>
+                                   <a href="/career1">Career</a> 
+                                   <a href="/feedback">Feedback</a>
+                                   <a href="/contactus">Contact us</a> 
+                                   <a href="/admin">Admin login</a>  
+                             </div>
+                       </div>   
+                        <div class="header">
+                        </div>   
+                        
+                  <style>
+                    
+                        /*Sign up form */
+                        /* Container for image and form */
+                             .image-container {
+                                 position: relative; /* Needed for absolute positioning inside */
+                                 display:flex;
+                             }
+
+                         /* The background image */
+                             .image-container img {
+                             display: block;   
+                            }
+                 </style>
+
+                 
+
+                          
+                                
+    </head>
+        
+    <body>
+    
+        
+          
+            <!--Form testing-->
+            <div class="form-overlay1">
+    
+                            <h2>Upload Image</h2>
+                                        <form  id="uploadForm" method="post" enctype="multipart/form-data">
+                                            <input type="text" name="imgtitle" id="imgtitle"  placeholder="Image Title" required>
+                                            <input type="file" name="image" id="image" required>
+                                            <button type="submit">Upload</button>
+                                        </form>
+                            <script>
+                                            document.getElementById('uploadForm').addEventListener('submit'), function(e) {
+                                                e.preventDefault();
+                                                const formData = new FormData(this);
+                                                formData.append('image', file);
+                                                fetch('/images', { method: 'POST', body: formData });
+
+                                            };
+
+                            </script>
+                            
+            </div>
+                  
+            
+            
+            
+            
+            
+            <!-- Sign up form -->              
+                    <div class="image-container">
+                        <img class="img2" src="/public/images/bodyImg2.jpg">
+  
+                              <form class="form-overlay" method="POST">
+                                 <h3>Sign Up</h3>
+                                     <input type="text" name="name" id="name" placeholder="Your name"></br>
+                                     <input type="email" name="email" id="email" placeholder="your email"></br>
+                                     <button type="submit">Submit</button>
+                              </form>
+                    
+                            <!--Social media connection -->
+                            <div class="text-overlay">
+                                        <h6>Follow us on .....</h6>
+                                        <a href="https://www.instagram.com" target="_blank">
+                                            <img src="/public/images/instragram.png" class="sm_icon" >
+                                        </a>
+
+                                        <a href="https://www.facebook.com" target="_blank">
+                                            <img src="/public/images/facebook.png" class="sm_icon1">
+                                        </a> 
+
+                                        <a href="https://www.facebook.com" target="_blank">
+                                            <img src="/public/images/twiter.png" class="sm_icon2">
+                                        </a>  
+                                </div>   
+                    </div>
+
+
+                        
+            
+                 
+
+                <!--footer-->
+                    <div class="footer">
+                     <p>&copy; My website , all rights reserved</p>
+                    </div>  
+                    
+        </body>
+        
+</html>
