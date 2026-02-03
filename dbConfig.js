@@ -3,7 +3,8 @@ var conn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'heidiDb'
+    database: 'heidiDb',
+    dateStrings: true   // <-- This code is for no timezone conversion
 
 })
 

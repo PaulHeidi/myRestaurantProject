@@ -14,7 +14,7 @@
                                    <a href="/career1">Career</a> 
                                    <a href="/feedback">Feedback</a>
                                    <a href="/contactus">Contact us</a>  
-                                   <a href="/admin">Admin login</a>                            
+                                   <a href="/adminLogin">Admin login</a>                            
                             </div>                       
                         </div>   
                         <div class="header">
@@ -72,7 +72,16 @@
 
 
                        } 
-                       
+                       .form-overlay2 textarea{
+                              background-color:   rgba(215, 130, 20, 0.684);
+                              padding: 10px;
+                              width: 445px;
+                              border:5;
+                              border-radius: 10px;
+                              outline: none;
+                              margin-bottom: 12px;
+
+                        }
                                                  
                 </style>
 
@@ -130,7 +139,7 @@
     <title>Users Table</title>
     <style>
         table { border-collapse: collapse; width: 80%; margin: 20px auto; }
-        th, td { border: 2px solid #e9890a; background-color:#e9880a70; padding: 8px; text-align: left; }
+        th, td { border: 2px solid #e9890a; background-color:#e9880a70; padding: 8px; text-align: left; font-size: larger; font-weight: bold;}
         th { background-color: #f6a90f; }
         h2 { text-align: center; }
     </style>
@@ -149,24 +158,31 @@
                      width: 250px; /* Set desired width */
                      padding: 2px; /* Inner spacing */
                      font-size: 14px; /* Text size */
+                     font-weight: bold;
                      box-sizing: border-box; /* Include padding/border in width */
                     }
-
+                    input[type="label"]{
+                        text-align: left;
+                        font-size: larger;
+                        font-weight: bold;
+                    }
                     input[type="date"], input[type="date"] {
                      width: 250px; /* Set desired width */
                      padding: 4px; /* Inner spacing */
                      font-size: 14px; /* Text size */
+                     font-weight: bold;
                      box-sizing: border-box; /* Include padding/border in width */
                     }
                     input[type="time"], input[type="time"] {
                      width: 250px; /* Set desired width */
                      padding: 4px; /* Inner spacing */
                      font-size: 14px; /* Text size */
+                     font-weight: bold;
                      box-sizing: border-box; /* Include padding/border in width */
                     }
                     /* Optional: make them even smaller */
                     .small-input {
-                    width: 50px;
+                    width: 80px;
                     }
                     
             </style>
@@ -174,10 +190,10 @@
         
 <body>
     <div class="form-overlay2">
-        <h2>Please add your choice and your selected dish will be added bottom of the page!</h2>
+        <h2>Please add your choices as many times as you want. and your selections will be added to your </br>order list at the bottom of the page!</h2>
     <div class="container"><br><br>
                 <!--Breakfast menu-->
-                            <h5>Breakfast Menu</h5>
+                            <h2>Breakfast Menu</h2>
                                  <table border="1" id="userTable">
                                      <thead>
                                        <tr>
@@ -318,7 +334,7 @@
 
 
 <!--Lunch menu-->
-                    <h5>Lunch Menu</h5>
+                    <h2>Lunch Menu</h2>
                          <table border="1" id="userTable1">
                               <thead>
                                 <tr>
@@ -448,7 +464,7 @@
 </script>
 
                 <!--Dinner menu-->
-                    <h5>Dinner Menu</h5>
+                    <h2>Dinner Menu</h2>
                          <table border="1" id="userTable2">
                               <thead>
                                 <tr>
@@ -576,7 +592,7 @@
     
 </script>
                     <!--Beverage menu-->
-                    <h5>Beverage Menu</h5>
+                    <h2>Beverage Menu</h2>
                          <table border="1" id="userTable3">
                               <thead>
                                 <tr>
@@ -675,7 +691,7 @@
                                             const customerPhone = document.getElementById("customerPhone").value.trim();
                                             const pickupDate = document.getElementById("date").value;
                                             const pickupTime = document.getElementById("time").value;
-
+                                            const comment = document.getElementById("comment").value;           
                                             // Validate customer info
                                             if (!customerName || !customerPhone) {
                                                 alert("Please enter customer name and phone number.");
@@ -715,6 +731,7 @@
                                                 customer_phone: customerPhone,
                                                 date: pickupDate,     // pickup date
                                                 time: pickupTime,     // pickup time
+                                                comment: comment,
                                                 rows: data            // order items
                                                 })
                                             })
@@ -758,7 +775,7 @@
                      <h2>Your order list is here</h2>
                      
                         <table id="destinationTable">
-                            <h3>Customer Details</h3>
+                            <h2>Your's Details</h2>
                                             <label>Name: </label>
                                             <input type="text" name="customerName" id="customerName" placeholder="Please type your name" width="440px"  required>
                                             
@@ -769,7 +786,7 @@
                                             <input type="date" id="date" name="date" date_format="dd/mm/yyyy" placeholder="Date"   required>
                                             <label>Pickup time: </label>
                                             <input type="time" id="time" name="time" placeholder="Time"   required>
-                                           
+                                            <textarea id="comment" name="comment" row="20" column="100" placeholder="Any comments, question or suggestion"></textarea> 
                                             <br><br>
                                 <thead>
                                 <tr>

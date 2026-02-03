@@ -250,7 +250,8 @@ app.post('/adminRegister' , function(req, res, next){
         conn.query(sql, function (err, result){
             if (err) throw err;
             console.log('record inserted');
-            res.render('adminLogin', { error: null });
+            res.render('adminLogin', { error: null, success: true });
+
 
 ;
         });
@@ -425,14 +426,70 @@ app.get('/data3', (req, res) => {
 //display booking data in admin page
 // API endpoint to fetch data
 app.get('/data4', (req, res) => {
-    conn.query('SELECT fName,lName,email,phone,date,time,event,number,comment FROM booking', (err, results) => {
+    const searchDate = req.query.date;
+    const range = req.query.range;
+
+    let sql = `
+        SELECT fName, lName, email, phone, date, time, event, number, comment
+        FROM booking
+        WHERE 1=1
+    `;
+    let params = [];
+
+    // Search by specific date (exact match, no timezone conversion)
+    if (searchDate) {
+        sql += " AND date = ?";
+        params.push(searchDate);
+    }
+
+    // TODAY filter (manual YYYY-MM-DD, no timezone)
+    if (range === "today") {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const today = `${yyyy}-${mm}-${dd}`;
+
+        sql += " AND date = ?";
+        params.push(today);
+    }
+
+    // THIS WEEK filter (manual date math, no timezone)
+    if (range === "week") {
+        const now = new Date();
+        const local = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        const day = local.getDay(); // 0 = Sunday
+        const diffToMonday = day === 0 ? -6 : 1 - day;
+
+        const monday = new Date(local);
+        monday.setDate(local.getDate() + diffToMonday);
+
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+
+        const start = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')}-${String(monday.getDate()).padStart(2, '0')}`;
+        const end = `${sunday.getFullYear()}-${String(sunday.getMonth() + 1).padStart(2, '0')}-${String(sunday.getDate()).padStart(2, '0')}`;
+
+        sql += " AND date BETWEEN ? AND ?";
+        params.push(start, end);
+    }
+
+    sql += " ORDER BY date ASC, time ASC";
+
+    conn.query(sql, params, (err, results) => {
         if (err) {
             console.error('Database error:', err);
             return res.status(500).json({ error: 'Database query failed' });
         }
-        res.json(results); // Send data as JSON
+        res.json(results);
     });
 });
+
+
+
+
+
 //insert booking information 
 
         
@@ -472,7 +529,7 @@ app.post('/signup', (req, res) => {
 });
 
 //---------------------------------------------------------------------End Booking page -------------------------------------------------//
-
+//---------------------------------------------------------------------Feedback page ----------------------------------------------------//
 //display feedback data in admin page
 // API endpoint to fetch data
 app.get('/data5', (req, res) => {
@@ -520,17 +577,6 @@ app.get('/data9', (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
 //insert feedback information 
 app.post('/feedback', function(req, res) {
   const { Name, email, phone, date, time, quality, service, experience, comment } = req.body;
@@ -569,9 +615,9 @@ app.post('/feedback2', (req, res) => {
      });
  });
 
+//-------------------------------------------------------------------------------------End feedback page ------------------------------------------------//
 
-
-
+//-------------------------------------------------------------------------------------Career page -----------------------------------------------------//
 
 //insert career data 
 // Upload route
@@ -670,19 +716,9 @@ app.get('/list', function (req, res){
     res.render("list"); 
 });
 
+//----------------------------------------------------------------------------------------End career page-----------------------------------------------//
 
-
-
-
-
-
-
-
-
-
-
-
-
+//---------------------------------------------------------------------------------------Online order page----------------------------------------------//
 
 //online order data input
 // API endpoint to fetch countries
@@ -711,13 +747,9 @@ app.post('/onlineOrder' , function(req, res, next){
 });
 
 
-
-
-
-
 //display online order list in adminpage 
 app.get("/get-orders", (req, res) => {
-  const sql = `SELECT customer_name,customer_phone, dishName, price, order_date, order_time, date, time FROM orders ORDER BY customer_phone, order_date DESC`;
+  const sql = `SELECT customer_name,customer_phone, dishName, price, order_date, order_time, date, time, comment FROM orders ORDER BY customer_phone, order_date DESC`;
 
   conn.query(sql, (err, results) => {
     if (err) return res.status(500).json({ error: err });
@@ -727,7 +759,7 @@ app.get("/get-orders", (req, res) => {
  // Get all menu data
 app.post("/save-order", (req, res) => {
   const { customer_name, customer_phone, rows, date, time } = req.body;
-
+  const comment = req.body.comment || "";
   // Validate customer info
   if (!customer_name || !customer_phone) {
     return res.status(400).json({ message: "Customer name and phone are required" });
@@ -757,12 +789,13 @@ app.post("/save-order", (req, res) => {
     date,         // pickup date
     time,         // pickup time
     order_date,   // order placed date
-    order_time    // order placed time
+    order_time,    // order placed time
+    comment
   ]);
 
   const sql = `
     INSERT INTO orders 
-    (dishName, price, customer_name, customer_phone, date, time, order_date, order_time)
+    (dishName, price, customer_name, customer_phone, date, time, order_date, order_time, comment)
     VALUES ?
   `;
 
@@ -780,7 +813,7 @@ app.post("/save-order", (req, res) => {
 });
 
 
-
+//------------------------------------------------------------------End online order page------------------------------------------------//
 
 
 
@@ -900,6 +933,9 @@ app.get('/home', function (req, res){
 
 app.get('/uploadjob', function (req, res){
     res.render("uploadjob"); 
+});
+app.get('/bookingList', function (req, res){
+    res.render("bookingList"); 
 });
     
 //testing upload image
