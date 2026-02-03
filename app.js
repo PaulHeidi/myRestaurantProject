@@ -749,13 +749,63 @@ app.post('/onlineOrder' , function(req, res, next){
 
 //display online order list in adminpage 
 app.get("/get-orders", (req, res) => {
-  const sql = `SELECT customer_name,customer_phone, dishName, price, order_date, order_time, date, time, comment FROM orders ORDER BY customer_phone, order_date DESC`;
+  const searchDate = req.query.date;
+  const range = req.query.range;
 
-  conn.query(sql, (err, results) => {
+  let sql = `
+    SELECT customer_name, customer_phone, dishName, price, order_date, order_time, date AS pickup_date, time AS pickup_time, comment
+    FROM orders
+    WHERE 1=1
+  `;
+  let params = [];
+
+  // Search by specific order date
+  if (searchDate) {
+    sql += " AND order_date = ?";
+    params.push(searchDate);
+  }
+
+  // Today filter
+  if (range === "today") {
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+    const today = `${yyyy}-${mm}-${dd}`;
+
+    sql += " AND order_date = ?";
+    params.push(today);
+  }
+
+  // This Week filter
+  if (range === "week") {
+    const now = new Date();
+    const local = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const day = local.getDay();
+    const diffToMonday = day === 0 ? -6 : 1 - day;
+
+    const monday = new Date(local);
+    monday.setDate(local.getDate() + diffToMonday);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    const start = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, "0")}-${String(monday.getDate()).padStart(2, "0")}`;
+    const end = `${sunday.getFullYear()}-${String(sunday.getMonth() + 1).padStart(2, "0")}-${String(sunday.getDate()).padStart(2, "0")}`;
+
+    sql += " AND order_date BETWEEN ? AND ?";
+    params.push(start, end);
+  }
+
+  sql += " ORDER BY customer_phone, order_date DESC";
+
+  conn.query(sql, params, (err, results) => {
     if (err) return res.status(500).json({ error: err });
     res.json(results);
   });
 });
+
  // Get all menu data
 app.post("/save-order", (req, res) => {
   const { customer_name, customer_phone, rows, date, time } = req.body;
@@ -936,6 +986,9 @@ app.get('/uploadjob', function (req, res){
 });
 app.get('/bookingList', function (req, res){
     res.render("bookingList"); 
+});
+app.get('/orderList', function (req, res){
+    res.render("orderList"); 
 });
     
 //testing upload image

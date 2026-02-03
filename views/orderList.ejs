@@ -90,7 +90,49 @@
                         }
                                                  
                 </style>
-
+                <style>
+                  .form-overlay3 {
+                              width: 100%;
+                              height: auto;
+                              display: grid;
+                              place-items: center;
+                              background-size:contain;  
+                              background-repeat: no-repeat;
+                              border-radius: 5px;
+                              border: 2px solid rgb(196, 144, 40);
+                              top: 200px; /* Distance from top of image */
+                              left: 270px; /* Distance from left of image */
+                              background-color:rgb(250, 245, 245);
+                              background-image: url('/public/images/careerBg.jpg');
+                              
+                        }
+                       .form-overlay3 button {
+                                height: 100%;
+                                width: 8%;
+                                position:relative;
+                                border:2px solid;
+                                border:5;
+                                border-radius: 10px;
+                                outline: none; 
+                                background-color: rgb(196, 144, 40);
+                                font-size: large;
+                                font-weight: bold;
+                                padding: 10px;
+                        }     
+                        .form-overlay3 input {
+                                height: 100%;
+                                width: 8%;
+                                position:relative;
+                                border:2px solid;
+                                border:5;
+                                border-radius: 10px;
+                                outline: none; 
+                                background-color: rgb(196, 144, 40);
+                                font-size: large;
+                                font-weight: bold;
+                                padding: 10px;
+                        }                              
+                </style>
 
                 <!--Social media connection -->
                 <style>
@@ -152,161 +194,149 @@
     </head>
         
 <body>
+<a href="/adminLogout"><h4>Logout</h4></a>
+<h2>Online Orders</h2>
+    
+              <div class="form-overlay3">
+                    <!-- Filter Buttons --></br>
+                          <button onclick="loadToday()">Today</button>
+                          <button onclick="loadThisWeek()">This Week</button>
+                          <button onclick="loadAll()">Show All</button>
+
+                          <br><br>
+
+                          <input type="date" id="orderSearchDate">
+                          <button onclick="searchOrderByDate()">Search</button>
+
+
+                    <br><br>
+              </div>
     <div class="form-overlay2">
     <div class="container"><br><br>
-      <h1>Welcome Admin <%= userName %></h1>
+     
 
-<a href="/adminLogout"><h4>Logout</h4></a>
 
-<h4>Admin page</h4>
-        
 
-        
+        <!--Online order list -->
+
+           
+
+<table id="ordersTable" border="1" cellpadding="8" width="100%">
+  <thead>
+    <tr>
+      <th>Customer details & dish name</th>
+      <th>Price</th>
+      <th>Order date</th>
+      <th>Order time</th>
+      <th>Pickup date</th>
+      <th>Pickup time</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+
+function formatDate(dateString) {
+  const d = new Date(dateString);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+function loadAll() {
+  fetch("/get-orders")
+    .then(res => res.json())
+    .then(data => renderOrders(data));
+}
+
+function loadToday() {
+  fetch("/get-orders?range=today")
+    .then(res => res.json())
+    .then(data => renderOrders(data));
+}
+
+function loadThisWeek() {
+  fetch("/get-orders?range=week")
+    .then(res => res.json())
+    .then(data => renderOrders(data));
+}
+
+function searchOrderByDate() {
+  const date = document.getElementById("orderSearchDate").value;
+  if (!date) {
+    alert("Please select a date");
+    return;
+  }
+
+  fetch(`/get-orders?date=${date}`)
+    .then(res => res.json())
+    .then(data => renderOrders(data));
+}
+
+function renderOrders(data) {
+  const tbody = document.querySelector("#ordersTable tbody");
+  tbody.innerHTML = "";
+
+  const grouped = {};
+
+  data.forEach(order => {
+    if (!grouped[order.customer_phone]) {
+      grouped[order.customer_phone] = {
+        name: order.customer_name,
+        phone: order.customer_phone,
+        items: []
+      };
+    }
+
+    grouped[order.customer_phone].items.push({
+      dish: order.dishName,
+      price: order.price,
+      orderdate: order.order_date,
+      ordertime: order.order_time,
+      pickupdate: order.pickup_date,
+      pickuptime: order.pickup_time
+    });
+  });
+
+  Object.values(grouped).forEach(customer => {
+    const headerRow = tbody.insertRow();
+    headerRow.innerHTML = `
+      <td colspan="6" style="
+        font-weight:bold;
+        background:#f0f0f0;
+        padding:10px;
+        font-size:18px;
+      ">
+        ${customer.name} (${customer.phone})
+      </td>
+    `;
+
+    customer.items.forEach(item => {
+      const row = tbody.insertRow();
+      row.insertCell(0).textContent = item.dish;
+      row.insertCell(1).textContent = item.price.toFixed(2);
+      row.insertCell(2).textContent = formatDate(item.orderdate);
+      row.insertCell(3).textContent = item.ordertime;
+      row.insertCell(4).textContent = formatDate(item.pickupdate);
+      row.insertCell(5).textContent = item.pickuptime;
+    });
+  });
+}
+
+loadAll();
+</script>
+
 
 
 
 
 
                
-<!-- Guest Feedback Section -->
-           <h2>Guest Feedback</h2>
-                    <table border="1" id="userTable5">
-                      <thead>
-                           <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Quality</th>
-                                <th>Service</th>
-                                <th>Experience</th>
-                                <th>Comments</th>
-                                
-                            </tr>
-                        </thead>
-                         <tbody></tbody>
-                    </table>
-
-                <script>
-                      // Fetch data from backend API
-                         fetch('http://localhost:3000/data5')
-                            .then(response => {
-                             if (!response.ok) throw new Error('Network response was not ok');
-                             return response.json();
-                             })
-                              .then(data5 => {
-                               const tableBody = document.querySelector('#userTable5 tbody');
-                                 tableBody.innerHTML = ''; // Clear existing rows
-
-                                     data5.forEach(user => {
-                                         const row = `<tr>
-                                             
-                                             <td>${user.Name}</td>
-                                             <td>${user.email}</td>
-                                             <td>${user.phone}</td>
-                                             <td>${user.date}</td>
-                                             <td>${user.time}</td>
-                                             <td>${user.quality}</td>
-                                             <td>${user.service}</td>
-                                             <td>${user.experience}</td>
-                                             <td>${user.comment}</td>
-                                         </tr>`;
-                                         tableBody.innerHTML += row;
-                                     });
-                                 })
-                                .catch(error => console.error('Error fetching data:', error));
-                 </script>
-<!-- Guest contactus Section -->
-           <h2>Guest communication</h2>
-                    <table border="1" id="userTable6">
-                      <thead>
-                           <tr>
-                                
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Subject</th>
-                                <th>Message</th>
-                                                                
-                            </tr>
-                        </thead>
-                         <tbody></tbody>
-                    </table>
-                <!-- <script src="app.js"></script> -->
-                <script>
-                      // Fetch data from backend API
-                         fetch('http://localhost:3000/data6')
-                            .then(response => {
-                             if (!response.ok) throw new Error('Network response was not ok');
-                             return response.json();
-                             })
-                              .then(data6 => {
-                               const tableBody = document.querySelector('#userTable6 tbody');
-                                 tableBody.innerHTML = ''; // Clear existing rows
-
-                                     data6.forEach(user => {
-                                         const row = `<tr>
-                                             
-                                             <td>${user.name}</td>
-                                             <td>${user.email}</td>
-                                             <td>${user.phone}</td>
-                                             <td>${user.subject}</td>
-                                             <td>${user.message}</td>
-                                            
-                                         </tr>`;
-                                         tableBody.innerHTML += row;
-                                     });
-                                 })
-                                .catch(error => console.error('Error fetching data:', error));
-                 </script>
 
 
-
-              <!-- Subscription record  -->
-           <h2>Subscription</h2>
-                    <table border="1" id="userTable9">
-                      <thead>
-                           <tr>
-                                
-                                <th>Name</th>
-                                <th>Email</th>
-                                                                                                
-                            </tr>
-                        </thead>
-                         <tbody></tbody>
-                    </table>
-                <!-- <script src="app.js"></script> -->
-                <script>
-                      // Fetch data from backend API
-                         fetch('http://localhost:3000/data9')
-                            .then(response => {
-                             if (!response.ok) throw new Error('Network response was not ok');
-                             return response.json();
-                             })
-                              .then(data9 => {
-                               const tableBody = document.querySelector('#userTable9 tbody');
-                                 tableBody.innerHTML = ''; // Clear existing rows
-
-                                     data9.forEach(user => {
-                                         const row = `<tr>
-                                             
-                                             <td>${user.name}</td>
-                                             <td>${user.email}</td>
-                                             
-                                            
-                                         </tr>`;
-                                         tableBody.innerHTML += row;
-                                     });
-                                 })
-                                .catch(error => console.error('Error fetching data:', error));
-                 </script>
-
-   <!-- Online order list-->                                    
-  <a href="/orderList" style="color:red;">
-    <h2>Online order list</h2>
-  </a>
-<br>                              
+                            
       <!-- Booking list-->                                    
   <a href="/bookingList" style="color:red;">
     <h2>Reservation list</h2>
