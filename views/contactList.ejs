@@ -66,7 +66,49 @@
                                 background-color: rgba(250, 235, 215, 0.518);
                         }
                 </style>
-
+<style>
+                  .form-overlay3 {
+                              width: 100%;
+                              height: auto;
+                              display: grid;
+                              place-items: center;
+                              background-size:contain;  
+                              background-repeat: no-repeat;
+                              border-radius: 5px;
+                              border: 2px solid rgb(196, 144, 40);
+                              top: 200px; /* Distance from top of image */
+                              left: 270px; /* Distance from left of image */
+                              background-color:rgb(250, 245, 245);
+                              background-image: url('/public/images/careerBg.jpg');
+                              
+                        }
+                       .form-overlay3 button {
+                                height: 100%;
+                                width: 8%;
+                                position:relative;
+                                border:2px solid;
+                                border:5;
+                                border-radius: 10px;
+                                outline: none; 
+                                background-color: rgb(196, 144, 40);
+                                font-size: large;
+                                font-weight: bold;
+                                padding: 10px;
+                        }     
+                        .form-overlay3 input {
+                                height: 100%;
+                                width: 8%;
+                                position:relative;
+                                border:2px solid;
+                                border:5;
+                                border-radius: 10px;
+                                outline: none; 
+                                background-color: rgb(196, 144, 40);
+                                font-size: large;
+                                font-weight: bold;
+                                padding: 10px;
+                        }                              
+                </style>
 
             <!--Body image-->
             <style>
@@ -144,7 +186,7 @@
     <title>Users Table</title>
     <style>
         table { border-collapse: collapse; width: 80%; margin: 20px auto;}
-        th, td { border: 2px solid #e9890a; background-color:#e9880a70; padding: 8px; text-align: left; }
+        th, td { border: 2px solid #e9890a; background-color:#e9880a70; padding: 8px; text-align: left; font-size: large;font-weight: bold;}
         th { background-color: #f6a90f; }
         h2 { text-align: center; }
     </style>
@@ -152,134 +194,102 @@
     </head>
         
 <body>
+   <a href="/adminLogout"><h4>Logout</h4></a>
+            <h2>Feedback List</h2>
+              <div class="form-overlay3">
+                                <!-- Filter Buttons --></br>
+                          <button onclick="loadToday()">Today</button>
+                          <button onclick="loadThisWeek()">This Week</button>
+                          <button onclick="loadAll()">Show All</button>
+
+                          <br><br>
+
+                          <input type="date" id="commSearchDate">
+                          <button onclick="searchByDate()">Search</button>
+
+                    <br><br>
+              </div>
+
     <div class="form-overlay2">
     <div class="container"><br><br>
-      <h1>Welcome Admin <%= userName %></h1>
+      
+                      <table border="1" id="userTable6">
+                          <thead>
+                              <tr>
+                                  <th>Name</th>
+                                  <th>Email</th>
+                                  <th>Phone</th>
+                                  <th>Date</th>
+                                  <th>Time</th>
+                                  <th>Subject</th>
+                                  <th>Message</th>
+                              </tr>
+                          </thead>
+                          <tbody></tbody>
+                      </table>
 
-<a href="/adminLogout"><h4>Logout</h4></a>
+            <script>
 
-<h4>Admin page</h4>
-        
-         
-                 </script>
-<!-- Guest contactus Section -->
-           <h2>Guest communication</h2>
-                    <table border="1" id="userTable6">
-                      <thead>
-                           <tr>
-                                
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Subject</th>
-                                <th>Message</th>
-                                                                
-                            </tr>
-                        </thead>
-                         <tbody></tbody>
-                    </table>
-                <!-- <script src="app.js"></script> -->
-                <script>
-                      // Fetch data from backend API
-                         fetch('http://localhost:3000/data6')
-                            .then(response => {
-                             if (!response.ok) throw new Error('Network response was not ok');
-                             return response.json();
-                             })
-                              .then(data6 => {
-                               const tableBody = document.querySelector('#userTable6 tbody');
-                                 tableBody.innerHTML = ''; // Clear existing rows
+                      function loadAll() {
+                          fetch("http://localhost:3000/data6")
+                              .then(res => res.json())
+                              .then(data => renderCommunication(data));
+                      }
 
-                                     data6.forEach(user => {
-                                         const row = `<tr>
-                                             
-                                             <td>${user.name}</td>
-                                             <td>${user.email}</td>
-                                             <td>${user.phone}</td>
-                                             <td>${user.subject}</td>
-                                             <td>${user.message}</td>
-                                            
-                                         </tr>`;
-                                         tableBody.innerHTML += row;
-                                     });
-                                 })
-                                .catch(error => console.error('Error fetching data:', error));
-                 </script>
+                      function loadToday() {
+                          fetch("http://localhost:3000/data6?range=today")
+                              .then(res => res.json())
+                              .then(data => renderCommunication(data));
+                      }
 
+                      function loadThisWeek() {
+                          fetch("http://localhost:3000/data6?range=week")
+                              .then(res => res.json())
+                              .then(data => renderCommunication(data));
+                      }
 
+                      function searchByDate() {
+                          const date = document.getElementById("commSearchDate").value;
+                          if (!date) {
+                              alert("Please select a date");
+                              return;
+                          }
 
-              <!-- Subscription record  -->
-           <h2>Subscription</h2>
-                    <table border="1" id="userTable9">
-                      <thead>
-                           <tr>
-                                
-                                <th>Name</th>
-                                <th>Email</th>
-                                                                                                
-                            </tr>
-                        </thead>
-                         <tbody></tbody>
-                    </table>
-                <!-- <script src="app.js"></script> -->
-                <script>
-                      // Fetch data from backend API
-                         fetch('http://localhost:3000/data9')
-                            .then(response => {
-                             if (!response.ok) throw new Error('Network response was not ok');
-                             return response.json();
-                             })
-                              .then(data9 => {
-                               const tableBody = document.querySelector('#userTable9 tbody');
-                                 tableBody.innerHTML = ''; // Clear existing rows
+                          fetch(`http://localhost:3000/data6?date=${date}`)
+                              .then(res => res.json())
+                              .then(data => renderCommunication(data));
+                      }
 
-                                     data9.forEach(user => {
-                                         const row = `<tr>
-                                             
-                                             <td>${user.name}</td>
-                                             <td>${user.email}</td>
-                                             
-                                            
-                                         </tr>`;
-                                         tableBody.innerHTML += row;
-                                     });
-                                 })
-                                .catch(error => console.error('Error fetching data:', error));
-                 </script>
+                      function renderCommunication(data6) {
+                          const tableBody = document.querySelector("#userTable6 tbody");
+                          tableBody.innerHTML = "";
 
-   <!-- Online order list-->                                    
-  <a href="/orderList" style="color:red;">
-    <h2>Online order list</h2>
-  </a>
-<br>                              
-      <!-- Booking list-->                                    
-  <a href="/bookingList" style="color:red;">
-    <h2>Reservation list</h2>
-  </a>
-<br>  
- <!-- Feedback list-->                                    
-  <a href="/feedbackList" style="color:red;">
-    <h2>Customer feedback list</h2>
-  </a>
-<br>                                         
-  <!-- job list-->                                    
-  <a href="/list" style="color:red;">
-    <h2>Job application list</h2>
-  </a>
-<br>
+                          data6.forEach(user => {
+                              const row = `
+                                  <tr>
+                                      <td>${user.name}</td>
+                                      <td>${user.email}</td>
+                                      <td>${user.phone}</td>
+                                      <td>${user.date}</td>
+                                      <td>${user.time}</td>
+                                      <td>${user.subject}</td>
+                                      <td>${user.message}</td>
+                                  </tr>
+                              `;
+                              tableBody.innerHTML += row;
+                          });
+                      }
 
-<!--Edit gallery-->
- <a href="/editGallery" style="color:red;">
-    <h2>Edit photo gallery </h2>
-  </a>
-<!-- Edit or add menu -->
-  <a href="/insertMenu" style="color:red;">
-    <h2>Insert or Edit menu items  </h2>
-  </a>
+                      loadAll();
+
+        </script>
 
 
 
-                                    
+
+              
+
+    
 
 
  

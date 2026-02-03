@@ -261,14 +261,14 @@ app.post('/adminRegister' , function(req, res, next){
 //-----------------------------------------------------------------Contactus ----------------------------------------------------------//
 //input contactUs details 
 app.post('/contactUs', function(req, res) {
-  const { name, email, phone, subject, message } = req.body;
+  const { name, email, phone, date, time, subject, message } = req.body;
 
   const sql = `
-    INSERT INTO contactUs (name, email, phone, subject, message)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO contactUs (name, email, phone, date,time, subject, message)
+    VALUES (?, ?, ?, ?, ?, ?, ? )
   `;
 
-  conn.query(sql, [name, email, phone, subject, message], function(err, result) {
+  conn.query(sql, [name, email, phone, date, time, subject, message], function(err, result) {
     if (err) {
       console.error(err);
       return res.json({ success: false, message: "Message sending failed" });
@@ -284,6 +284,71 @@ app.post('/contactUs', function(req, res) {
 });
 
 
+//display contactus data in admin page
+// API endpoint to fetch data
+app.get('/data6', (req, res) => {
+    const searchDate = req.query.date;
+    const range = req.query.range;
+
+    let sql = `
+        SELECT name, email, phone, subject, message, date, time
+        FROM contactus
+        WHERE 1=1
+    `;
+    let params = [];
+
+    // Search by specific date
+    if (searchDate) {
+        sql += " AND date = ?";
+        params.push(searchDate);
+    }
+
+    // Today filter
+    if (range === "today") {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const today = `${yyyy}-${mm}-${dd}`;
+
+        sql += " AND date = ?";
+        params.push(today);
+    }
+
+    // This Week filter
+    if (range === "week") {
+        const now = new Date();
+        const local = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        const day = local.getDay();
+        const diffToMonday = day === 0 ? -6 : 1 - day;
+
+        const monday = new Date(local);
+        monday.setDate(local.getDate() + diffToMonday);
+
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+
+        const start = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')}-${String(monday.getDate()).padStart(2, '0')}`;
+        const end = `${sunday.getFullYear()}-${String(sunday.getMonth() + 1).padStart(2, '0')}-${String(sunday.getDate()).padStart(2, '0')}`;
+
+        sql += " AND date BETWEEN ? AND ?";
+        params.push(start, end);
+    }
+
+    sql += " ORDER BY date DESC, time DESC";
+
+    conn.query(sql, params, (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Database query failed" });
+        }
+        res.json(results);
+    });
+});
+
+
+//--------------------------------------------------------------------------End contact us page ----------------------------------------//
 // insert subscription data in contactus page 
 app.post('/contact2', (req, res) => { 
     const { name, email } = req.body; 
@@ -292,13 +357,6 @@ app.post('/contact2', (req, res) => {
         if (err) throw err; console.log('Subscription inserted!'); res.render('contactUs');
      });
  });
-
-
-
-
-
-
-
 
 
 
@@ -592,19 +650,11 @@ app.get('/data5', (req, res) => {
         res.json(results);
     });
 });
+//--------------------------------------------------------------------------End feedback page--------------------------------------------//
+
+//--------------------------------------------------------------------------Contact us page ---------------------------------------------//
 
 
-//display contactus data in admin page
-// API endpoint to fetch data
-app.get('/data6', (req, res) => {
-    conn.query('SELECT name,email,phone,subject,message FROM contactUs', (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database query failed' });
-        }
-        res.json(results); // Send data as JSON
-    });
-});
 //display job application data in admin page
 // API endpoint to fetch data
 app.get('/data8', (req, res) => {
@@ -1044,6 +1094,9 @@ app.get('/orderList', function (req, res){
 });
 app.get('/feedbackList', function (req, res){
     res.render("feedbackList"); 
+});
+app.get('/contactList', function (req, res){
+    res.render("contactList"); 
 });
     
 //testing upload image
