@@ -159,52 +159,7 @@
 <a href="/adminLogout"><h4>Logout</h4></a>
 
 <h4>Admin page</h4>
-        <!--Reservation request list -->
-                  <h2>Reservation request</h2>
-                    <table border="1" id="userTable4">
-                      <thead>
-                           <tr>
-                                
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Event</th>
-                                <th>Peoples</th>
-                                <th>Comments</th>
-                                
-                            </tr>
-                        </thead>
-                         <tbody></tbody>
-                    </table>
-                     <script>
-                      // Fetch data from backend API
-                         fetch('http://localhost:3000/data4')
-                            .then(response => {
-                             if (!response.ok) throw new Error('Network response was not ok');
-                             return response.json();
-                             })
-                              .then(data4 => {
-                               const tableBody = document.querySelector('#userTable4 tbody');
-                                 tableBody.innerHTML = ''; // Clear existing rows
-
-                                     data4.forEach(user => {
-                                         const row = `<tr>
-                                             <td>${user.fName},${user.lName}</td>
-                                             <td>${user.email}</td>
-                                             <td>${user.phone}</td>
-                                             <td>${user.date}</td>
-                                             <td>${user.time}</td>
-                                             <td>${user.event}</td>
-                                             <td>${user.number}</td>
-                                             <td>${user.comment}</td>
-                                         </tr>`;
-                                         tableBody.innerHTML += row;
-                                     });
-                                 })
-                                .catch(error => console.error('Error fetching data:', error));
-                 </script>
+        
 
         <!--Online order list -->
 
@@ -438,7 +393,11 @@
                  </script>
 
                             
-                                                 
+      <!-- Booking list-->                                    
+  <a href="/bookingList" style="color:red;">
+    <h2>Reservation list</h2>
+  </a>
+<br>                                           
   <!-- job list-->                                    
   <a href="/list" style="color:red;">
     <h2>Job application list</h2>

@@ -88,9 +88,51 @@
                               border-radius: 8px;
                               box-shadow: 6 8px 10x rgba(0,0,0,0.2);
                         }
-                                                 
+                               
                 </style>
-
+                <style>
+                  .form-overlay3 {
+                              width: 100%;
+                              height: auto;
+                              display: grid;
+                              place-items: center;
+                              background-size:contain;  
+                              background-repeat: no-repeat;
+                              border-radius: 5px;
+                              border: 2px solid rgb(196, 144, 40);
+                              top: 200px; /* Distance from top of image */
+                              left: 270px; /* Distance from left of image */
+                              background-color:rgb(250, 245, 245);
+                              background-image: url('/public/images/careerBg.jpg');
+                              
+                        }
+                       .form-overlay3 button {
+                                height: 100%;
+                                width: 8%;
+                                position:relative;
+                                border:2px solid;
+                                border:5;
+                                border-radius: 10px;
+                                outline: none; 
+                                background-color: rgb(196, 144, 40);
+                                font-size: large;
+                                font-weight: bold;
+                                padding: 10px;
+                        }     
+                        .form-overlay3 input {
+                                height: 100%;
+                                width: 8%;
+                                position:relative;
+                                border:2px solid;
+                                border:5;
+                                border-radius: 10px;
+                                outline: none; 
+                                background-color: rgb(196, 144, 40);
+                                font-size: large;
+                                font-weight: bold;
+                                padding: 10px;
+                        }                              
+                </style>
 
                 <!--Social media connection -->
                 <style>
@@ -152,28 +194,26 @@
     </head>
         
 <body>
+<a href="/adminLogout"><h4>Logout</h4></a>
+<h2>Reservation List</h2>
+              <div class="form-overlay3">
+                    <!-- Filter Buttons --></br>
+                    <button onclick="loadToday()">Today</button></br>
+                    <button onclick="loadThisWeek()">This Week</button></br>
+                    <button onclick="loadAll()">Show All</button>
+
+                    <br><br>
+
+                    <!-- Search by date -->
+                    <input type="date" id="searchDate"></br>
+                    <button onclick="searchByDate()">Search</button>
+
+                    <br><br>
+              </div>
+
     <div class="form-overlay2">
     <div class="container"><br><br>
       
-
-<a href="/adminLogout"><h4>Logout</h4></a>
-
-
-
-<h2>Reservation request</h2>
-
-<!-- Filter Buttons -->
-<button onclick="loadToday()">Today</button>
-<button onclick="loadThisWeek()">This Week</button>
-<button onclick="loadAll()">Show All</button>
-
-<br><br>
-
-<!-- Search by date -->
-<input type="date" id="searchDate">
-<button onclick="searchByDate()">Search</button>
-
-<br><br>
 
 <table border="1" id="userTable4">
     <thead>
