@@ -93,7 +93,7 @@ app.get('/adminLogout', function(req, res) {
 
 
 
-
+//---------------------------------------------------------------------------Gallery page--------------------------------------------------------------------//
 
 app.use(cors());
 // Multer setup (store file in memory)
@@ -109,7 +109,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // Upload route
 
-app.post('/uploadImage', upload.single('image'), (req, res) => {
+app.post('/editgallery', upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
@@ -174,7 +174,7 @@ app.post('/gallery', function(req, res) {
     console.log("record inserted"); res.render("gallery"); 
 }); });
 
-
+//------------------------------------------------------------------------End Gallery page-----------------------------------------------//
 
 
 
@@ -1099,6 +1099,9 @@ app.get('/contactList', function (req, res){
     res.render("contactList"); 
 });
     
+app.get('/subscription', function (req, res){
+    res.render("subscription"); 
+});
 //testing upload image
 
 

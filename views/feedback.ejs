@@ -62,11 +62,13 @@
                               background-color: rgba(215, 130, 20, 0.684);
                               height: 30px;    
                               padding: 20px;
-                              width: 220px;
+                              width: 240px;
                               border:5px;
                               border-radius: 10px;
                               outline: none;
                               margin-bottom: 12px;
+                              font-size: larger;
+                              font-weight: bold;
 
                         }
                              .form-overlay1 button {
@@ -77,34 +79,50 @@
                                  background-color: green; 
                                 border:5;
                                 border-radius: 10px;
-                                outline: none;   
+                                outline: none;
+                                font-weight: bold;   
                         }
                          .form-overlay1 textarea{
                               background-color:   rgba(215, 130, 20, 0.684);
                               padding: 10px;
-                              width: 445px;
+                              width: 483px;
                               border:5;
                               border-radius: 10px;
                               outline: none;
                               margin-bottom: 12px;
+                              font-size: larger;
+                              font-weight: bold;
 
                         }
                         .form-overlay1 select{
                              background-color:   rgba(215, 130, 20, 0.684);
-                              height: 40px;    
+                              height: 50px;    
                               padding: 10px;
-                              width: 220px;
+                              width: 240px;
                               border:5;
                               border-radius: 10px;
                               outline: none;
                               margin-bottom: 12px;
-                              font-size: small;
-                              font-weight: lighter;
+                              font-size:larger;
+                              font-weight:bold;
 
                         }
                 </style>
+                <!-- Google and Tripadvisor link icon-->
+                <style>
+                        .sm_icon5, .sm_icon6 {
+                        width:80px;
+                        height:80px;
+                        object-fit:contain;
+                        cursor:pointer;
+                        border-radius:6px;
+                        padding:4px;
+                        box-shadow:0 0 6px rgba(0,0,0,0.2);
 
 
+                        
+                    }
+                </style>
               
                                 
     </head>
@@ -160,9 +178,45 @@
                     <div>
                         <textarea id="comment" name="comment" row="20" column="100" placeholder="Any comments, question or suggestion"></textarea> 
                     </div>
-                    <div>
-                        <button type="submit">Submit</button>
+                    <!--Goole and Tripadvisor link -->
+                    <div style="
+                                        margin-top:15px;
+                                        display:flex;
+                                        justify-content:center;
+                                        align-items:center;
+                                        gap:15px;
+                                    ">
+
+                                        <!-- Submit button -->
+                                        <button type="submit" style="
+                                            padding:10px 20px;
+                                            font-size:16px;
+                                            cursor:pointer;
+                                        ">
+                                            Submit
+                                        </button>
+
+                                        <!-- Google icon -->
+                                        <a href="https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fcustomerreviews.google.com%2F&dsh=S909051172%3A1770172752341371&followup=https%3A%2F%2Fcustomerreviews.google.com%2F&ifkv=AXbMIuDEM5PHBKCChxElAA8IKFra03c22GZikROg4T1GttlQ1WdUJkkMkwvx9Brv59ITl-DOhtrKlA&passive=1209600&flowName=GlifWebSignIn&flowEntry=ServiceLogin" target="_blank">
+                                            <img src="/public/images/google.png" class="sm_icon5">
+                                        </a>
+
+                                        <!-- Tripadvisor icon -->
+                                        <a href="https://www.tripadvisor.com.au/" target="_blank">
+                                            <img src="/public/images/trip.png" class="sm_icon6">
+                                        </a>
+
                     </div>
+
+
+
+
+
+
+
+
+
+
                 </form>
             </div>
             <script>

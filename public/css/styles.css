@@ -44,13 +44,13 @@ h8 {
 }
 /*body text color*/
 p {color:#100b01;
-    
-    font-size: small;
-text-align: justify;
+    font-weight: bold;
+    font-size:large;
+    text-align: justify;
 }
 p1 {color:#100b01;
 font-weight: bold;
-font-size:large;
+font-size:xx-large;
 font-family: cursive;
 }
 h5 {color:#100b01;
@@ -90,7 +90,7 @@ position: relative;
 } 
 
 .img3 { 
-height: 40vh;
+height: 20vh;
 width:32%;
 padding: 5px 20px 30px 20px;
 border: 2px solid #333;
@@ -99,14 +99,14 @@ box-shadow: 5px 18px 10px rgba(0,0,0,0.5);
 }
 
 .img4 { 
-height: 40vh;
+height: 20vh;
 width:32%;
 padding: 5px 20px 30px 20px;
 border: 2px solid #333;
 box-shadow: 5px 15px 10px rgba(0,0,0,0.5);
 }
 .img5 { 
-height: 40vh;
+height: 20vh;
 width:32%;
 padding: 5px 20px 30px 20px;
 border: 2px solid #333;

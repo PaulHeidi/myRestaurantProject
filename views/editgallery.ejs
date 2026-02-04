@@ -36,6 +36,101 @@
                               .preview img { max-width: 300px; margin-top: 10px; }
                     </style>
 
+                    <style>
+                        /*Sign up form */
+                        /* Container for image and form */
+                             .image-container {
+                                 position:relative; /* Needed for absolute positioning inside */
+                                 display:flex;
+                             }
+
+                                          /* The background image */
+                             .image-container img {
+                             display: block;   
+                            }
+
+                        /* The form overlay */
+                             .form-overlay {
+                              position: absolute;
+                              height: 100%;
+                              width:20%;
+                              top: 10px; /* Distance from top of image */
+                              left: 800px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+                              box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                        }
+
+                         /* Form styling */
+                            .form-overlay input{
+                              background-color: rgba(250, 235, 215, 0.518);
+                              height: 20px;    
+                              padding: 0px;
+                              width: 220px;
+                              border-style:solid;
+
+                        }
+                             .form-overlay button {
+                                height: 20%;
+                                width: 30%;
+                                position:relative;
+                                border: none;
+                                float:right;
+                                background-color: rgba(250, 235, 215, 0.518);
+                        }
+                </style>
+
+
+            <!--Body image-->
+            <style>
+                    
+                        .form-overlay2 {
+                              width: 100%;
+                              height: auto;
+                              display: grid;
+                              place-items: center;
+                              background-image: url('/public/images/careerBg.jpg');
+                              background-size:contain;  
+                              background-repeat: no-repeat;
+                              border-radius: 5px;
+                              border: 2px solid rgb(196, 144, 40);
+                              top: 200px; /* Distance from top of image */
+                              left: 270px; /* Distance from left of image */
+                              background-color:rgb(250, 245, 245);
+                              padding: 80px 47px ;
+                              border-radius: 8px;
+                              box-shadow: 6 8px 10x rgba(0,0,0,0.2);
+                        }
+                                 .form-overlay2 button {
+                                height: 25%;
+                                width: 40%;
+                                position:relative;
+                                border:2px solid;
+                                border:5;
+                                border-radius: 10px;
+                                outline: none; 
+                                background-color: rgb(28, 187, 16);
+                                font-size: large;
+                                font-weight: bold;
+                                padding: 10px;
+                        }     
+                        .form-overlay2 input {
+                                height: 25%;
+                                width: 70%;
+                                position:relative;
+                                border:2px solid;
+                                border:5;
+                                border-radius: 10px;
+                                outline: none; 
+                                background-color: rgb(196, 144, 40);
+                                font-size: large;
+                                font-weight: bold;
+                                padding: 10px;
+                        }                   
+                </style>
+                
+
                     <!-- Display Image table-->
                      
                       
@@ -49,7 +144,8 @@
         <!--Form testing-->
      
 
-                    <h8>Edit photo Gallery<a href="/adminPage" style="color:red;"> Back to adminPage </a></h8>
+                    <h5>Edit photo Gallery</h5>
+                    <a href="/adminPage" style="color:red;"> Back to adminPage </a></h8>
                     <div class="table">
                         <table class="table">
                             <tbody id="imageTableBody">
@@ -108,7 +204,28 @@
                     </script>
         
 
+<!--Form testing-->
+            <div class="form-overlay2">
+    
+                            <h2>Upload Image</h2>
+                                        <form  id="uploadForm" method="post" enctype="multipart/form-data">
+                                            <input type="text" name="imgtitle" id="imgtitle"  placeholder="Image Title" required></br></br>
+                                            <input type="file" name="image" id="image" required></br></br>
+                                            <button type="submit">Upload</button>
+                                        </form>
+                            <script>
+                                            document.getElementById('uploadForm').addEventListener('submit'), function(e) {
+                                                e.preventDefault();
+                                                const formData = new FormData(this);
+                                                formData.append('image', file);
+                                                fetch('/images', { method: 'POST', body: formData });
 
+                                            };
+
+                            </script>
+                            
+            </div>
+                  
 
 
 
