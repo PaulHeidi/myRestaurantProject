@@ -159,11 +159,33 @@
 
                           }
                 </style>
+                
     </head>
         
 <body>
     
-      
+     <% if (success) { %>
+<script>
+Swal.fire({
+    title: "Approved!",
+    text: "<%= success %>",
+    icon: "success",
+    confirmButtonColor: "#3085d6",
+    confirmButtonText: "OK"
+});
+</script>
+<% } %>
+<script>
+console.log("TEST POPUP RUNNING");
+Swal.fire({
+    title: "Test",
+    text: "If you see this, SweetAlert works.",
+    icon: "info"
+});
+</script>
+
+
+
           
 <!--Form testing-->
         <div class="form-overlay1">
@@ -235,7 +257,8 @@
                     <div class="footer">
                      <p>&copy; My website , all rights reserved</p>
                     </div>
-            
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         </body>
         
 </html>

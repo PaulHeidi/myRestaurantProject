@@ -141,7 +141,8 @@
         
 <body>
     
-      <h1>Welcome Admin <%= userName %></h1>
+      <h1>Welcome Admin <%= admin.userName %></h1>
+
           
 
           <div style="
@@ -203,6 +204,14 @@
                               <a href="/subscription">
                                 <button class="dash-btn">Subscription List</button>
                               </a>
+                              <a href="/adminRegister">
+                                <button class="dash-btn">New Admin register</button>
+                              </a>
+                              <% if (admin.role === "head") { %>
+                                  <a href="/admin/pending">
+                                      <button class="dash-btn">Approve new admin</button>
+                                  </a>
+                              <% } %>
 
                               <div style="margin-top:20px;">
 
