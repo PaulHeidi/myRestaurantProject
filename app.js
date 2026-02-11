@@ -1,6 +1,6 @@
 var express = require('express'); 
 var app = express(); 
-
+const bcrypt = require('bcrypt');
 var session = require('express-session');
 var conn = require ('./dbConfig');
 const { error } = require('console');
@@ -117,17 +117,6 @@ app.post('/gallery', function(req, res) {
 
 //------------------------------------------------------------------------End Gallery page-----------------------------------------------//
 
-
-
-
-
-
-
-
-
-
-
-
 app.use('/public', express.static('public')); 
 
 app.use(express.json());
@@ -139,17 +128,7 @@ app.get('/', function (req, res){
     res.render("home"); 
 }); 
 
-
-
-
-   
-
-
-
-
-
-
-
+//--------------------------------------------------------------Sample code -------------------------------------------------------//
 //Users can access this if they are logged in
 app.get('/membersOnly', function (req,res, next){
     if (req.session.loggedin){
@@ -160,11 +139,6 @@ app.get('/membersOnly', function (req,res, next){
     }
 });
 
-
-
-
-
-//--------------------------------------------------------------Sample code -------------------------------------------------------//
 //Users can access this only if they are logged in
 app.get('/addMPs', function (req, res, next){
     if (req.session.loggedin)
@@ -180,28 +154,40 @@ app.get('/addMPs', function (req, res, next){
 
 //--------------------------------------------------------------Sample code -------------------------------------------------------//
 
-//--------------------------------------------------------------Admin registration page---------------------------------------------//
+//--------------------------------------------------------------Admin registration and login page---------------------------------------------//
 //input admin details //
-app.post('/adminRegister', function(req, res, next){
-    var adminName = req.body.adminName;
-    var email = req.body.email;
-    var userName = req.body.userName;
-    var password = req.body.password;
+app.post('/adminRegister', async function(req, res, next) {
+    try {
+        const adminName = req.body.adminName;
+        const email = req.body.email;
+        const userName = req.body.userName;
+        const password = req.body.password;
 
-    var sql = `
-        INSERT INTO adminRegister (adminName, email, userName, password, status, role)
-        VALUES (?, ?, ?, ?, 'pending', 'normal')
-    `;
+        // 🔐 Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-    conn.query(sql, [adminName, email, userName, password], function (err, result){
-        if (err) throw err;
-        console.log('record inserted');
-        res.render('adminLogin', { 
-            error: "Registration submitted. Waiting for head admin approval.",
-            success: false 
+        const sql = `
+            INSERT INTO adminRegister (adminName, email, userName, password, status, role)
+            VALUES (?, ?, ?, ?, 'pending', 'normal')
+        `;
+
+        conn.query(sql, [adminName, email, userName, hashedPassword], function(err, result) {
+            if (err) throw err;
+
+            console.log('Admin registered with encrypted password');
+
+            res.render('adminLogin', { 
+                error: "Registration submitted. Waiting for head admin approval.",
+                success: false 
+            });
         });
-    });
+
+    } catch (err) {
+        console.error(err);
+        res.render('adminLogin', { error: "Something went wrong.", success: false });
+    }
 });
+
 
 
 
@@ -223,12 +209,7 @@ function isAdminLoggedIn(req, res, next) {
         res.redirect('/adminLogin?msg=loginRequired');
     }
 }
-function isHeadAdmin(req, res, next) {
-    if (req.session && req.session.loggedin && req.session.role === 'head') {
-        return next();
-    }
-    res.redirect('/adminLogin?msg=loginRequired');
-}
+
 function isHeadAdmin(req, res, next) {
     if (req.session.admin && req.session.admin.role === "head") {
         return next();
@@ -242,6 +223,76 @@ app.get('/adminLogin', (req, res) => {
     res.render("adminLogin", { error: null, success: null });
 });
 
+app.post('/adminLogin', function(req, res) {
+    let userName = req.body.username;
+    let password = req.body.password;
+    console.log("Login attempt:", userName, password);
+
+
+    conn.query(
+        'SELECT * FROM adminRegister WHERE userName = ?',
+        [userName],
+        async function(error, results) {
+            if (error) throw error;
+
+            if (results.length === 0) {
+                return res.render('adminLogin', { 
+                    error: 'Incorrect username or password!',
+                    success: false
+                });
+            }
+
+            const admin = results[0];
+
+            // 🔐 Compare hashed password
+            const match = await bcrypt.compare(password, admin.password);
+            
+            console.log("DB password:", admin.password);
+            console.log("Compare result:", match);
+
+
+
+            if (!match) {
+                return res.render('adminLogin', { 
+                    error: 'Incorrect username or password!',
+                    success: false
+                });
+            }
+
+            // ❗ Check approval status
+            if (admin.status !== "approved") {
+                return res.render('adminLogin', { 
+                    error: "Your admin access is pending head admin approval.",
+                    success: false
+                });
+            }
+
+            // Store session data
+            req.session.admin = {
+                id: admin.id,
+                userName: admin.userName,
+                role: admin.role,
+                status: admin.status
+            };
+            req.session.loggedin = true;
+
+
+            console.log("Logged in admin:", req.session.admin);
+
+            // 🔔 Show popup only once after approval
+            if (admin.justApproved === 1) {
+                req.session.justApproved = true;
+
+                conn.query(
+                    "UPDATE adminRegister SET justApproved = 0 WHERE id = ?",
+                    [admin.id]
+                );
+            }
+
+            res.redirect('/adminPage');
+        }
+    );
+});
 
 
 
@@ -277,77 +328,13 @@ app.post('/admin/approve/:id', isHeadAdmin, (req, res) => {
 });
 
 
-
-
-
-   
-
-app.post('/adminLogin', function(req, res) {
-    let userName = req.body.username;
-    let password = req.body.password;
-
-    conn.query(
-        'SELECT * FROM adminRegister WHERE userName = ? AND password = ?',
-        [userName, password],
-        function(error, results) {
-            if (error) throw error;
-
-            if (results.length > 0) {
-                const admin = results[0];
-
-                // Block login if not approved
-                if (admin.status !== "approved") {
-                    return res.render("adminLogin", { 
-                        error: "Your admin access is pending head admin approval.",
-                        success: null
-                    });
-                }
-
-                // Store session
-                req.session.admin = {
-                    id: admin.id,
-                    userName: admin.userName,
-                    role: admin.role,
-                    status: admin.status
-                };
-
-                // ⭐ POPUP CHECK ⭐
-                if (req.session.approvedUserId === admin.id) {
-                     console.log("POPUP SHOULD SHOW NOW"); // DEBUG
-
-                    req.session.approvedUserId = null; // clear flag
-                    return res.render("adminLogin", { 
-                        success: "Your admin account has been approved. You can now log in.",
-                        error: null
-                    });
-                }
-
-                // Normal login
-                return res.redirect('/adminPage');
-
-            } else {
-                return res.render('adminLogin', { 
-                    error: 'Incorrect username or password!',
-                    success: null
-                });
-            }
-        }
-    );
-});
-
-
-
-
-
-
-
 // logout authentiation 
 app.get('/adminLogout', function(req, res) {
     req.session.destroy(() => {
         res.redirect('/adminLogin');
     });
 });
-
+//-----------------------------------------------------------------End Admin registration and login page-------------------------------//
 
 
 //-----------------------------------------------------------------Contactus ----------------------------------------------------------//
