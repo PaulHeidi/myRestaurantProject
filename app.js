@@ -427,7 +427,7 @@ app.get('/data6', (req, res) => {
 });
 
 
-//--------------------------------------------------------------------------End contact us page ----------------------------------------//
+
 // insert subscription data in contactus page 
 app.post('/contact2', (req, res) => { 
     const { name, email } = req.body; 
@@ -437,7 +437,7 @@ app.post('/contact2', (req, res) => {
      });
  });
 
-
+//--------------------------------------------------------------------------End contact us page ----------------------------------------//
 
 // insert subscription data from home page 
 app.post('/' , function(req, res, next){
@@ -552,6 +552,21 @@ app.get('/data3', (req, res) => {
         }
         res.json(results); // Send data as JSON
     });
+});
+
+//insert menu data
+app.post('/insertMenu' , function(req, res, next){
+    //var dishID = req.body.dishID;
+    var catagory = req.body.catagory;
+    var dishName = req.body.dishName;
+    var description = req.body.description;
+    var price = req.body.price;
+    var sql = `INSERT INTO addMenu1 (catagory, dishName, description, price) VALUES ("${catagory}", "${dishName}","${description}","${price}")`;
+        conn.query(sql, function (err, result){
+            if (err) throw err;
+            console.log('record inserted');
+            res.render('insertMenu');
+        });
 });
 //----------------------------------------------------------------End Menu page-------------------------------------------------//
 
@@ -729,9 +744,7 @@ app.get('/data5', (req, res) => {
         res.json(results);
     });
 });
-//--------------------------------------------------------------------------End feedback page--------------------------------------------//
 
-//--------------------------------------------------------------------------Contact us page ---------------------------------------------//
 
 
 //display job application data in admin page
@@ -1045,32 +1058,6 @@ app.post("/save-order", (req, res) => {
 
 
 //------------------------------------------------------------------End online order page------------------------------------------------//
-
-
-
-
-
-
-//insert menu data
-app.post('/insertMenu' , function(req, res, next){
-    //var dishID = req.body.dishID;
-    var catagory = req.body.catagory;
-    var dishName = req.body.dishName;
-    var description = req.body.description;
-    var price = req.body.price;
-    var sql = `INSERT INTO addMenu1 (catagory, dishName, description, price) VALUES ("${catagory}", "${dishName}","${description}","${price}")`;
-        conn.query(sql, function (err, result){
-            if (err) throw err;
-            console.log('record inserted');
-            res.render('insertMenu');
-        });
-});
-
-
-
-
-
-
 
 app.get('/auckland', function (req, res){
     res.render("auckland"); 
