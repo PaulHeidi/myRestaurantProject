@@ -345,6 +345,115 @@ app.get('/adminLogout', function(req, res) {
         res.redirect('/adminLogin');
     });
 });
+
+//Backend route to send recovery email
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+
+app.post("/forgotPass", (req, res) => {
+    const email = req.body.email;
+
+    conn.query("SELECT * FROM adminRegister WHERE email=?", [email], (err, result) => {
+        if (err) throw err;
+
+        if (result.length === 0) {
+            return res.send("No account found with that email.");
+        }
+
+        const token = crypto.randomBytes(32).toString("hex");
+        const expiry = new Date(Date.now() + 1000 * 60 * 15); // 15 minutes
+
+        conn.query(
+            "UPDATE adminRegister SET resetToken=?, resetTokenExpiry=? WHERE email=?",
+            [token, expiry, email]
+        );
+
+        const resetLink = `http://localhost:3000/reset-password/${token}`;
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "yourgmail@gmail.com",
+                pass: "your-app-password"
+            }
+        });
+
+        const mailOptions = {
+            from: "yourgmail@gmail.com",
+            to: email,
+            subject: "Admin Account Recovery",
+            text: `Click the link to reset your password: ${resetLink}`
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                console.log(err);
+                return res.send("Error sending email.");
+            }
+            res.send("Recovery email sent. Check your inbox.");
+        });
+    });
+});
+//Backend route to handle reset
+app.get("/reset-password/:token", (req, res) => {
+    const token = req.params.token;
+
+    conn.query(
+        "SELECT * FROM adminRegister WHERE resetToken=? AND resetTokenExpiry > NOW()",
+        [token],
+        (err, result) => {
+            if (err) throw err;
+
+            if (result.length === 0) {
+                return res.send("Invalid or expired token.");
+            }
+
+            res.render("reset-password", { token });
+        }
+    );
+});
+
+app.post("/reset-password/:token", (req, res) => {
+    const token = req.params.token;
+    const newPassword = req.body.password;
+
+    const hashed = bcrypt.hashSync(newPassword, 10);
+
+    conn.query(
+        "UPDATE adminRegister SET password=?, resetToken=NULL, resetTokenExpiry=NULL WHERE resetToken=?",
+        [hashed, token],
+        (err) => {
+            if (err) throw err;
+            res.send("Password reset successful. You can now log in.");
+        }
+    );
+});
+
+//Forgot username route 
+app.post("/forgotUsername", (req, res) => {
+    const email = req.body.email;
+
+    conn.query("SELECT userName FROM adminRegister WHERE email=?", [email], (err, result) => {
+        if (err) throw err;
+
+        if (result.length === 0) {
+            return res.send("No account found with that email.");
+        }
+
+        const username = result[0].userName;
+
+        transporter.sendMail({
+            from: "yourgmail@gmail.com",
+            to: email,
+            subject: "Your Admin Username",
+            text: `Your username is: ${username}`
+        });
+
+        res.send("Username sent to your email.");
+    });
+});
+
+
 //-----------------------------------------------------------------End Admin registration and login page-------------------------------//
 
 
