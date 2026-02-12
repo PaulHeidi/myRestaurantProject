@@ -137,50 +137,81 @@
   
                 <h2>Pending Admin Approvals</h2>
 
-    <table border="1" cellpadding="8" cellspacing="0">
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Username</th>
+        <th>Action</th>
+    </tr>
+
+    <% if (admins.length === 0) { %>
         <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Username</th>
-            <th>Action</th>
+            <td colspan="4">No pending admins.</td>
         </tr>
+    <% } %>
 
-        <% if (admins.length === 0) { %>
-            <tr>
-                <td colspan="4">No pending admins.</td>
-            </tr>
-        <% } %>
+    <% admins.forEach(a => { %>
+        <tr>
+            <td><%= a.adminName %></td>
+            <td><%= a.email %></td>
+            <td><%= a.userName %></td>
 
-        <% admins.forEach(a => { %>
-            <tr>
-                <td><%= a.adminName %></td>
-                <td><%= a.email %></td>
-                <td><%= a.userName %></td>
-                <td>
-                    <form action="/admin/approve/<%= a.id %>" method="POST" style="display:inline;">
-    <button type="submit" style="
-        padding: 10px 30px;
-        font-size: 16px;
-        width: 150px;
-        background:#cf1919;
-        color:white;
-        border:none;
-        border-radius:6px;
-        cursor:pointer;
-    ">
-        Approve
-    </button>
-</form>
+            <td>
 
+                <!-- APPROVE -->
+                <form action="/admin/approve/<%= a.id %>" method="POST" style="display:inline;">
+                    <button type="submit" style="
+                        padding: 10px 20px;
+                        background:#046e12;
+                        color:white;
+                        border:none;
+                        border-radius:6px;
+                        cursor:pointer;
+                        margin-right:5px;
+                    ">
+                        Approve
+                    </button>
+                </form>
 
+                <!-- REJECT -->
+                <form action="/admin/reject/<%= a.id %>" method="POST" style="display:inline;">
+                    <button type="submit" style="
+                        padding: 10px 20px;
+                        background:#e63946;
+                        color:rgb(253, 252, 252);
+                        border:none;
+                        border-radius:6px;
+                        cursor:pointer;
+                        margin-right:5px;
+                    ">
+                        Reject
+                    </button>
+                </form>
 
-                </td>
-            </tr>
-        <% }) %>
-    </table>
+                <!-- DELETE -->
+                <form action="/admin/delete/<%= a.id %>" method="POST" style="display:inline;"
+                      onsubmit="return confirm('Are you sure you want to DELETE this admin permanently?');">
+                    <button type="submit" style="
+                        padding: 10px 20px;
+                        background:#e63946;
+                        color:white;
+                        border:none;
+                        border-radius:6px;
+                        cursor:pointer;
+                    ">
+                        Delete
+                    </button>
+                </form>
 
-    <p><a href="/adminPage">Back to Admin Page</a></p>
-    <div style="margin-top:20px; text-align:center;">
+            </td>
+        </tr>
+    <% }) %>
+</table>
+
+<p><a href="/adminPage">Back to Admin Page</a></p>
+
+<div style="margin-top:20px; text-align:center;">
     <a href="/adminLogout" style="
         display:inline-block;
         padding:10px 20px;
@@ -192,10 +223,6 @@
     ">
         Logout
     </a>
-</div>
-
-
-
 </div>
 
          

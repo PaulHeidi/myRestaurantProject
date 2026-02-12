@@ -309,23 +309,34 @@ app.get("/admin/pending", isHeadAdmin, (req, res) => {
 
 
 
-/*Approve route*/
+
+// APPROVE
 app.post('/admin/approve/:id', isHeadAdmin, (req, res) => {
-    const adminId = req.params.id;
-
-    conn.query(
-        "UPDATE adminRegister SET status = 'approved' WHERE id = ?",
-        [adminId],
-        function(err) {
-            if (err) throw err;
-
-            // ⭐ Set flag so this admin sees popup on next login
-            req.session.approvedUserId = adminId;
-
-            res.redirect('/admin/pending');
-        }
-    );
+    const id = req.params.id;
+    conn.query("UPDATE adminRegister SET status='approved' WHERE id=?", [id], err => {
+        if (err) throw err;
+        res.redirect('/admin/pending');
+    });
 });
+
+// REJECT (moves to rejected state)
+app.post('/admin/reject/:id', isHeadAdmin, (req, res) => {
+    const id = req.params.id;
+    conn.query("UPDATE adminRegister SET status='rejected' WHERE id=?", [id], err => {
+        if (err) throw err;
+        res.redirect('/admin/pending');
+    });
+});
+
+// DELETE (permanent removal)
+app.post('/admin/delete/:id', isHeadAdmin, (req, res) => {
+    const id = req.params.id;
+    conn.query("DELETE FROM adminRegister WHERE id=?", [id], err => {
+        if (err) throw err;
+        res.redirect('/admin/pending');
+    });
+});
+
 
 
 // logout authentiation 
