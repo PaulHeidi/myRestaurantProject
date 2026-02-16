@@ -209,30 +209,30 @@
     </head>
         
 <body>
-<a href="/adminLogout"><h4>Logout</h4></a>
-<h2>Online Orders</h2>
+          <a href="/adminLogout"><h4>Logout</h4></a>
+                <h2>Online Orders</h2>
     
-              <div class="form-overlay3">
-                    <!-- Filter Buttons --></br>
-                          <button onclick="loadToday()">Today</button>
-                          <button onclick="loadThisWeek()">This Week</button>
-                          <button onclick="loadAll()">Show All</button>
+                                <div class="form-overlay3">
+                                      <!-- Filter Buttons --></br>
+                                            <button onclick="loadToday()">Today</button>
+                                            <button onclick="loadThisWeek()">This Week</button>
+                                            <button onclick="loadAll()">Show All</button>
 
-                          <br><br>
+                                            <br><br>
 
-                          <input type="date" id="orderSearchDate">
-                          <button onclick="searchOrderByDate()">Search</button>
-
-
-                    <br><br>
-              </div>
-    <div class="form-overlay2">
-    <div class="container"><br><br>
-     
+                                            <input type="date" id="orderSearchDate">
+                                            <button onclick="searchOrderByDate()">Search</button>
 
 
+                                      <br><br>
+                                </div>
+            <div class="form-overlay2">
+            <div class="container"><br><br>
+            
 
-        <!--Online order list -->
+
+
+              <!--Online order list -->
 
            
 
@@ -245,13 +245,14 @@
       <th>Order time</th>
       <th>Pickup date</th>
       <th>Pickup time</th>
+      <th>comment</th>
     </tr>
   </thead>
   <tbody></tbody>
 </table>
 
 <script>
-
+//Display date format
 function formatDate(dateString) {
   const d = new Date(dateString);
   const day = String(d.getDate()).padStart(2, "0");
@@ -259,25 +260,25 @@ function formatDate(dateString) {
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
 }
-
+//load all the online order order
 function loadAll() {
   fetch("/get-orders")
     .then(res => res.json())
     .then(data => renderOrders(data));
 }
-
+//load today online order order
 function loadToday() {
   fetch("/get-orders?range=today")
     .then(res => res.json())
     .then(data => renderOrders(data));
 }
-
+//load weekly online order
 function loadThisWeek() {
   fetch("/get-orders?range=week")
     .then(res => res.json())
     .then(data => renderOrders(data));
 }
-
+// search online order a particular date wise
 function searchOrderByDate() {
   const date = document.getElementById("orderSearchDate").value;
   if (!date) {
@@ -311,7 +312,8 @@ function renderOrders(data) {
       orderdate: order.order_date,
       ordertime: order.order_time,
       pickupdate: order.pickup_date,
-      pickuptime: order.pickup_time
+      pickuptime: order.pickup_time,
+      comment: order.comment
     });
   });
 
@@ -328,15 +330,22 @@ function renderOrders(data) {
       </td>
     `;
 
-    customer.items.forEach(item => {
-      const row = tbody.insertRow();
-      row.insertCell(0).textContent = item.dish;
-      row.insertCell(1).textContent = item.price.toFixed(2);
-      row.insertCell(2).textContent = formatDate(item.orderdate);
-      row.insertCell(3).textContent = item.ordertime;
-      row.insertCell(4).textContent = formatDate(item.pickupdate);
-      row.insertCell(5).textContent = item.pickuptime;
-    });
+    customer.items.forEach((item, index) => {
+  const row = tbody.insertRow();
+
+  row.insertCell(0).textContent = item.dish;
+  row.insertCell(1).textContent = item.price.toFixed(2);
+  row.insertCell(2).textContent = formatDate(item.orderdate);
+  row.insertCell(3).textContent = item.ordertime;
+  row.insertCell(4).textContent = formatDate(item.pickupdate);
+  row.insertCell(5).textContent = item.pickuptime;
+
+  // Comment column (only on first row)
+  const commentCell = row.insertCell(6);
+  commentCell.textContent = index === 0 ? (item.comment || "") : "";
+});
+
+
   });
 }
 

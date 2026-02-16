@@ -1071,7 +1071,7 @@ app.get("/get-orders", (req, res) => {
     FROM orders
     WHERE 1=1
   `;
-  let params = [];
+  let params = []; //create an empty array
 
   // Search by specific order date
   if (searchDate) {
@@ -1083,12 +1083,12 @@ app.get("/get-orders", (req, res) => {
   if (range === "today") {
     const now = new Date();
     const yyyy = now.getFullYear();
-    const mm = String(now.getMonth() + 1).padStart(2, "0");
-    const dd = String(now.getDate()).padStart(2, "0");
+    const mm = String(now.getMonth() + 1).padStart(2, "0");   //Converts the number into a string so we can format it.
+    const dd = String(now.getDate()).padStart(2, "0");   //This ensures the string is always 2 characters long.
     const today = `${yyyy}-${mm}-${dd}`;
 
     sql += " AND order_date = ?";
-    params.push(today);
+    params.push(today);  //This adds the value of  into the  array.
   }
 
   // This Week filter
@@ -1147,7 +1147,7 @@ app.post("/save-order", (req, res) => {
   // Build values for bulk insert
   const values = rows.map(r => [
     r.item_name,
-    parseFloat(r.item_price) || 0,
+    parseFloat(r.item_price) || 0, //converts the price to a number, and if it fails, it returns 0.
     customer_name,
     customer_phone,
     date,         // pickup date
