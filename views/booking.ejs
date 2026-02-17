@@ -125,16 +125,16 @@
   
                 <form action="/booking" method="post" id="bookingForm" onsubmit="submitBooking(event)">
                     <h2>Reservation</h2>
-                    <input type="text" id="fName" name="fName" placeholder="First Name">
-                    <input type="text" id="lName" name="lName" placeholder="Last Name">
+                    <input type="text" id="fName" name="fName" placeholder="First Name" required>
+                    <input type="text" id="lName" name="lName" placeholder="Last Name" required>
 
                     <div>
-                        <input type="email" id="email" name="email" placeholder="Email">
-                         <input type="text" id="phone" name="phone" placeholder="Phone">                        
+                        <input type="email" id="email" name="email" placeholder="Email" required>
+                         <input type="text" id="phone" name="phone" placeholder="Phone" required>                        
                     </div>
                     <div>
-                        <input type="date" id="date" name="date" placeholder="Date">
-                         <input type="time" id="time" name="time" placeholder="Time">                        
+                        <input type="date" id="date" name="date" placeholder="Date" required>
+                         <input type="time" id="time" name="time" placeholder="Time" required>                        
                     </div>
                     <div>
                         <select id="event" name="event">
