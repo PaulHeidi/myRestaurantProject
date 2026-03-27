@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice Details</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            padding: 30px;
+        }
+
+        .invoice-container {
+            max-width: 1100px;
+            margin: auto;
+            background: #fff;
+            padding: 25px 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .sub-header {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+            background: #fafafa;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #0078ff;
+        }
+
+        .info-box p {
+            margin: 4px 0;
+            font-size: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        th {
+            background: #0078ff;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        tr:hover {
+            background: #f2f8ff;
+        }
+
+        .summary-box {
+            margin-top: 25px;
+            float: right;
+            width: 320px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+
+        .summary-box div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .summary-box .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="invoice-container">
+
+    <h2>Supplier: <%= invoice.supplier_name %></h2>
+    <div class="sub-header">Invoice Details</div>
+
+    <div class="info-box">
+        <p><strong>Invoice Number:</strong> <%= invoice.invoice_number %></p>
+        <p><strong>Invoice Date:</strong> <%= invoice.invoice_date %></p>
+    </div>
+
+    <h3>Invoice Items</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Brand</th>
+                <th>Pack Size</th>
+                <th>UOM</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>GST</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% items.forEach(item => { %>
+                <tr>
+                    <td><%= item.product_code || "—" %></td>
+                    <td><%= item.description %></td>
+                    <td><%= item.brand || "—" %></td>
+                    <td><%= item.pack_size || "—" %></td>
+                    <td><%= item.unit_of_measure || "—" %></td>
+                    <td><%= item.qty %></td>
+                    <td>$<%= Number(item.unit_price).toFixed(2) %></td>
+                    <td>$<%= Number(item.gst).toFixed(2) %></td>
+                    <td>$<%= Number(item.total).toFixed(2) %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <div class="summary-box">
+        <div>
+            <span>Subtotal:</span>
+            <span>$<%= Number(invoice.total_amount).toFixed(2) %></span>
+        </div>
+        <div>
+            <span>GST:</span>
+            <span>$0.00</span>
+        </div>
+        <div class="total">
+            Total: $<%= Number(invoice.total_amount).toFixed(2) %>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+

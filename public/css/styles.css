@@ -119,9 +119,9 @@ box-shadow: 5px 15px 10px rgba(0,0,0,0.5);
 
 /* header */
  .header { 
-       height: 100vh;
+       height: 10vh;
        width: 100%;
-       background-image: url(/public/images/headerBg.jpg);
+       /*background-image: url(/public/images/headerBg.jpg);*/
        background-size:cover;
        background-position: center center;       
        
@@ -198,13 +198,100 @@ box-shadow: 5px 15px 10px rgba(0,0,0,0.5);
   }
 */
                
- 
+ /*header*/
+ .top-header {
+    background-color: rgb(172, 202, 232);/* Change this to any colour */
+    padding: 15px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-logo {
+    height: 40px; /* Adjust size */
+    width: auto;
+}
+
+.header-title {
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+}
+/*body design*/
+/* Background container */
+.login-box {
+    width: 350px;
+    margin: 80px auto;
+    padding: 30px;
+    background: #b0c7d2;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    text-align: center;
+    font-family: Arial, sans-serif;
+    position:relative;
+}
+
+.login-box h2 {
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.login-box button:hover {
+    background: #005fcc;
+}
+
+.forgot-link {
+    margin-top: 15px;
+}
+
+.forgot-link a {
+    font-size: 14px;
+    color: #0078ff;
+    text-decoration: none;
+}
+
+.forgot-link a:hover {
+    text-decoration: underline;
+}
+
+
+
 /* footer background image */
 .footer{
-    background-image: url('/public/images/footerBg.jpg');
+    background-color: #7e96ac;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 30px;
+    height: 50px;
     position: fixed;
     left: 0;
     bottom: 0;
@@ -423,3 +510,91 @@ box-shadow: 5px 15px 10px rgba(0,0,0,0.5);
                         }
                          
                         
+/*logo and header */
+
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1px 2px; /* reduced vertical padding */
+  background-color:#7e96ac;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: auto; /* let content define height */
+}
+
+.header-logo {
+  height: 150px; /* keep logo size */
+  width: auto;
+}
+
+.header-left,
+.header-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap');
+
+.header-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 50px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin: 0;
+  text-align: center;
+  background: linear-gradient(45deg, #040404, #f0f0f0);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow:
+    1px 1px 2px rgba(0,0,0,0.3),  /* soft shadow */
+    -1px -1px 1px rgba(255,255,255,0.2); /* subtle highlight */
+}
+
+.brand-wrapper {
+    text-align: center;
+}
+
+.kitchorax-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 90px;
+    font-weight: bold;
+    color: #070707; /* silver tone */
+}
+
+.kitchorax-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: #161515cc;
+    margin-top: -8px;
+    text-transform: lowercase;
+    letter-spacing: 0.5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

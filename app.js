@@ -1,28 +1,20 @@
-var express = require('express'); 
-var app = express(); 
+require("dotenv").config();
+var express = require('express');
+var app = express();
 const bcrypt = require('bcrypt');
 var session = require('express-session');
-var conn = require ('./dbConfig');
-const { error } = require('console');
+var conn = require('./dbConfig');
 const multer = require('multer');
 const mysql = require('mysql2');
 const path = require('path');
 const fs = require('fs');
-const { get } = require('http');
 const cors = require('cors');
-const { title } = require('process');
-app.use(cors()); // Allow cross-origin requests
+const bodyParser = require("body-parser");
 
-// use this two lines for insert subscription data from gallery page 
-app.use(express.urlencoded({ extended: true })); 
-app.use(express.json());
-
+// Enable CORS
 app.use(cors());
 
-
-app.set('view engine','ejs'); 
-
-//login session time setup 
+// ⭐ SESSION MUST COME BEFORE ROUTES
 app.use(session({
     secret: 'yoursecret',
     resave: true,
@@ -33,13 +25,40 @@ app.use(session({
     }
 }));
 
+// View engine
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Body parsers
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Routes
+const invoiceRoutes = require("./routes/invoiceRoutes");
+app.use("/", invoiceRoutes);
+
+// File upload config (unchanged)
+const upload = multer({
+    dest: path.join(__dirname, 'uploads')
+});
+
+const galleryUpload = multer({ storage: multer.memoryStorage() });
+
+// Duplicate view engine line removed
+
+
+
+
+//-----------------------------------end new verson code ----------------------//
+
 
 //---------------------------------------------------------------------------Gallery page--------------------------------------------------------------------//
 
 app.use(cors());
 // Multer setup (store file in memory)
 
-const upload = multer({ storage: multer.memoryStorage() });
+
 
 
 //multer setup 
@@ -155,31 +174,68 @@ app.get('/addMPs', function (req, res, next){
 //--------------------------------------------------------------Sample code -------------------------------------------------------//
 
 //--------------------------------------------------------------Admin registration and login page---------------------------------------------//
+
+//restaurant management code start here //
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.SMTP_USER,   // your Outlook email
+        pass: process.env.SMTP_PASS    // your Outlook password
+    }
+});
+
+
+
 //input admin details //
-app.post('/adminRegister', async function(req, res, next) {
+app.post('/memberRegister', async function(req, res, next) {
     try {
         const adminName = req.body.adminName;
         const email = req.body.email;
         const userName = req.body.userName;
         const password = req.body.password;
 
-        // 🔐 Hash password
+        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Generate verification token
+        const crypto = require("crypto");
+        const token = crypto.randomBytes(32).toString("hex");
+
         const sql = `
-            INSERT INTO adminRegister (adminName, email, userName, password, status, role)
-            VALUES (?, ?, ?, ?, 'pending', 'normal')
+            INSERT INTO adminRegister (adminName, email, userName, password, is_verified, verification_token)
+            VALUES (?, ?, ?, ?, 0, ?)
         `;
 
-        conn.query(sql, [adminName, email, userName, hashedPassword], function(err, result) {
+        conn.query(sql, [adminName, email, userName, hashedPassword, token], async function(err, result) {
             if (err) throw err;
 
-            console.log('Admin registered with encrypted password');
+            console.log("Member registered with encrypted password");
 
-            res.render('adminLogin', { 
-                error: "Registration submitted. Waiting for head admin approval.",
-                success: false 
+            // ⭐ THIS IS WHERE YOUR EMAIL CODE GOES ⭐
+          const transporter = require("./config/mail");
+
+
+
+            const verificationLink = `http://localhost:3000/verify?token=${token}`;
+
+            await transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to: email,
+                subject: "Verify Your Member Account",
+                html: `<p>Click to verify: <a href="${verificationLink}">Verify</a></p>`
             });
+            // ⭐ END OF EMAIL CODE ⭐
+
+            res.render('memberLogin', { 
+                        popup: "Registration successful! Please check your email to verify your account.",
+                        error: null,
+                        success: null
+                    });
+
         });
 
     } catch (err) {
@@ -189,19 +245,63 @@ app.post('/adminRegister', async function(req, res, next) {
 });
 
 
+console.log(__dirname);
+//email varification code 
+app.get('/verify', function(req, res) {
+    const token = req.query.token;
 
-
-//user authentiation page 
-app.get("/adminPage", (req, res) => {
-    if (!req.session.admin) {
-        return res.redirect("/adminLogin");
+    if (!token) {
+        return res.render("verifyMessage", { message: "Invalid verification link." });
     }
 
-    res.render("adminPage", { admin: req.session.admin });
+    const sqlSelect = `
+        SELECT * FROM adminregister 
+        WHERE verification_token = ?
+    `;
+
+    conn.query(sqlSelect, [token], function(err, results) {
+        if (err) {
+            console.error(err);
+            return res.render("verifyMessage", { message: "Server error." });
+        }
+
+        if (results.length === 0) {
+            return res.render("verifyMessage", { message: "Invalid or expired verification link." });
+        }
+
+        const sqlUpdate = `
+            UPDATE adminregister 
+            SET is_verified = 1, verification_token = NULL 
+            WHERE verification_token = ?
+        `;
+
+        conn.query(sqlUpdate, [token], function(err2, result2) {
+            if (err2) {
+                console.error(err2);
+                return res.render("verifyMessage", { message: "Server error." });
+            }
+
+            // ⭐ THIS IS THE CORRECT PLACE ⭐
+            res.render("verifySuccess", { success: true });
+        });
+    });
+});
+
+//user authentiation page 
+app.get('/adminPage', function(req, res) {
+    if (!req.session.admin) {
+        return res.redirect('/memberLogin');
+    }
+
+    res.render('adminPage', {
+        admin: req.session.admin
+    });
 });
 
 
-//Middleware
+
+
+//Middleware 
 function isAdminLoggedIn(req, res, next) {
     if (req.session && req.session.loggedin) {
         next();
@@ -209,13 +309,15 @@ function isAdminLoggedIn(req, res, next) {
         res.redirect('/adminLogin?msg=loginRequired');
     }
 }
-
+// without this Middleware Approved, Reject and Delete not work//
 function isHeadAdmin(req, res, next) {
-    if (req.session.admin && req.session.admin.role === "head") {
+    if (req.session.admin && req.session.admin.role === "main_admin") {
         return next();
     }
     return res.redirect("/adminPage");
 }
+
+
 
 
 /*Login page */ 
@@ -223,12 +325,31 @@ app.get('/adminLogin', (req, res) => {
     res.render("adminLogin", { error: null, success: null });
 });
 
-app.post('/adminLogin', function(req, res) {
+//Restaurant management code //
+app.get('/memberLogin', (req, res) => {
+    const popupMessage = req.session.popupMessage || null;
+    delete req.session.popupMessage;
+
+    res.render("memberLogin", { 
+        popupMessage,
+        success: null,
+        error: null,
+        popup: null   // ⭐ ADD THIS
+    });
+});
+
+
+
+app.get('/memberRegister', (req, res) => {
+    res.render("memberRegister", { error: null, success: null });
+});
+//Restaurant management code //
+//This code "npm install express-rate-limit" This protects your login route from bots hammering it.//
+
+app.post('/memberLogin', function(req, res) {
     let userName = req.body.username;
     let password = req.body.password;
-    console.log("Login attempt:", userName, password);
-
-
+    
     conn.query(
         'SELECT * FROM adminRegister WHERE userName = ?',
         [userName],
@@ -236,38 +357,51 @@ app.post('/adminLogin', function(req, res) {
             if (error) throw error;
 
             if (results.length === 0) {
-                return res.render('adminLogin', { 
+                return res.render('memberLogin', { 
                     error: 'Incorrect username or password!',
-                    success: false
+                    success: null,
+                    popup: null
                 });
             }
 
             const admin = results[0];
 
-            // 🔐 Compare hashed password
-            const match = await bcrypt.compare(password, admin.password);
-            
-            console.log("DB password:", admin.password);
-            console.log("Compare result:", match);
+           // Skip checks for main admin
+if (admin.role !== "main_admin") {
+
+    // 1️⃣ Check email verification FIRST
+    if (!admin.is_verified) {
+        return res.render("memberLogin", { 
+            error: "Please verify your email before logging in.",
+            success: null,
+            popup: null
+        });
+    }
+
+    // 2️⃣ Check approval status SECOND
+    if (admin.status !== "approved") {
+        return res.render("memberLogin", { 
+            error: "Your admin access is pending head admin approval.",
+            success: null,
+            popup: null
+        });
+    }
+}
+
+// 3️⃣ Only check password AFTER verification + approval
+const match = await bcrypt.compare(password, admin.password);
+
+if (!match) {
+    return res.render('memberLogin', { 
+        error: 'Incorrect username or password!',
+        success: null,
+        popup: null
+    });
+}
 
 
 
-            if (!match) {
-                return res.render('adminLogin', { 
-                    error: 'Incorrect username or password!',
-                    success: false
-                });
-            }
-
-            // ❗ Check approval status
-            if (admin.status !== "approved") {
-                return res.render('adminLogin', { 
-                    error: "Your admin access is pending head admin approval.",
-                    success: false
-                });
-            }
-
-            // Store session data
+            // Store session
             req.session.admin = {
                 id: admin.id,
                 userName: admin.userName,
@@ -276,10 +410,7 @@ app.post('/adminLogin', function(req, res) {
             };
             req.session.loggedin = true;
 
-
-            console.log("Logged in admin:", req.session.admin);
-
-            // 🔔 Show popup only once after approval
+            // Popup after approval
             if (admin.justApproved === 1) {
                 req.session.justApproved = true;
 
@@ -289,25 +420,38 @@ app.post('/adminLogin', function(req, res) {
                 );
             }
 
-            res.redirect('/adminPage');
+            res.redirect('/products');
         }
     );
 });
 
 
 
+
+
+
+
+
+
 /*Head admin page: list pending admins*/
-app.get("/admin/pending", isHeadAdmin, (req, res) => {
-    conn.query("SELECT * FROM adminRegister WHERE status = 'pending'", (err, rows) => {
-        if (err) throw err;
-        res.render("approval.ejs", { 
+app.get('/admin/pending', function(req, res) {
+    if (!req.session.admin) {
+        return res.redirect('/memberLogin');
+    }
+
+    const popup = req.session.approvalSuccess ? "Approved successfully!" : null;
+
+    // Clear the flag so popup shows only once
+    req.session.approvalSuccess = null;
+
+    conn.query("SELECT * FROM adminRegister WHERE status='pending'", (err, rows) => {
+        res.render("approval", {
             admins: rows,
-            admin: req.session.admin
+            admin: req.session.admin,
+            popup
         });
     });
 });
-
-
 
 
 // APPROVE
@@ -315,7 +459,8 @@ app.post('/admin/approve/:id', isHeadAdmin, (req, res) => {
     const id = req.params.id;
     conn.query("UPDATE adminRegister SET status='approved' WHERE id=?", [id], err => {
         if (err) throw err;
-        res.redirect('/admin/pending');
+                req.session.approvalSuccess = true;
+                res.redirect('/admin/pending');
     });
 });
 
@@ -342,13 +487,17 @@ app.post('/admin/delete/:id', isHeadAdmin, (req, res) => {
 // logout authentiation 
 app.get('/adminLogout', function(req, res) {
     req.session.destroy(() => {
-        res.redirect('/adminLogin');
+        res.redirect('/memberLogin');
     });
 });
 
+
+
+
+
 //Backend route to send recovery email
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+
 
 app.post("/forgotPass", (req, res) => {
     const email = req.body.email;
@@ -1182,9 +1331,11 @@ app.post("/save-order", (req, res) => {
 app.get('/auckland', function (req, res){
     res.render("auckland"); 
 });
-app.get('/', function (req, res){
-    res.render(""); 
+
+app.get('/', (req, res) => {
+    res.direct('/memberlogin');
 });
+
 
 
 app.get('/uploadImage', function (req, res){
@@ -1292,8 +1443,112 @@ app.get('/approval', function (req, res){
     res.render("approval"); 
 });
 //testing upload image
+app.get('/memberLogin', function (req, res){
+    res.render("memberLogin"); 
+});
+app.get('/memberRegister', function (req, res){
+    res.render("memberRegister"); 
+});
+
+app.get('/supplier_orders', (req, res) => {
+    const sql = `
+        SELECT 
+            so.id,
+            so.invoice_number,
+            so.invoice_date,
+            so.total_amount,
+            s.name AS supplier_name
+        FROM supplier_orders AS so
+        JOIN suppliers AS s ON so.supplier_id = s.id
+        ORDER BY so.id DESC
+    `;
+
+    conn.query(sql, (err, results) => {
+        if (err) throw err;
+
+        res.render("supplier_orders", {
+            orders: results
+        });
+    });
+});
 
 
 
+
+
+
+
+app.get("/index", (req, res) => {
+    res.render("index");
+});
+
+app.get("/products", (req, res) => {
+    const sql = `
+        SELECT 
+            p.id,
+            p.product_code,
+            p.description AS product_name,
+            p.brand,
+            p.pack_size,
+            p.unit_of_measure AS unit,
+            (
+                SELECT price 
+                FROM price_history ph 
+                WHERE ph.product_id = p.id 
+                ORDER BY ph.date_recorded DESC 
+                LIMIT 1
+            ) AS latest_price
+        FROM products p
+        ORDER BY p.id DESC
+    `;
+
+    conn.query(sql, (err, products) => {
+        if (err) {
+            console.error("PRODUCTS QUERY ERROR:", err);
+            return res.status(500).send("Error loading products");
+        }
+
+        res.render("products", { products });
+    });
+});
+
+
+
+
+
+
+
+
+// new verson code 
+
+
+
+
+
+
+
+// new verson code end 
 app.listen(3000); 
 console.log('Node app is running on port 3000');
+
+
+
+// new verson code // middleware
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

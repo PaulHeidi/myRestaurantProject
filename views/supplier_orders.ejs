@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supplier Orders</title>
+    <style>
+        body { font-family: Arial; padding: 40px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <nav style="
+        width: 100%;
+        background: #1f2937;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    ">
+        <div style="color: #fff; font-size: 20px; font-weight: bold;">Admin Dashboard</div>
+
+        <div>
+            <a href="/products" style="color: #fff; margin-right: 20px; text-decoration: none;">Products</a>              
+            <a href="/upload_invoice" style="color: #fff; margin-right: 20px; text-decoration: none;">Upload Invoice</a>
+            <a href="/adminLogout" style="color: #f87171; font-weight: bold; text-decoration: none;">Logout</a>
+        </div>
+    </nav>
+
+    <h1>Supplier Orders</h1>
+
+    <table>
+        <tr>
+            <th>Invoice #</th>
+            <th>Supplier</th>
+            <th>Date</th>
+            <th>Total Amount</th>
+            <th>View Items</th>
+        </tr>
+
+        <% orders.forEach(order => { %>
+    <tr>
+        <td><%= order.invoice_number %></td>
+        <td><%= order.supplier_name %></td>
+        <td><%= order.invoice_date %></td>
+        <td>$<%= (order.total_amount || 0).toFixed(2) %></td>
+        <td><a href="/invoices/<%= order.id %>">View</a></td>
+    </tr>
+<% }) %>
+
+
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supplier Order - <%= order.invoice_number %></title>
+
+    <style>
+        body { font-family: Arial; padding: 40px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background: #f2f2f2; }
+        .header-box {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px solid #e5e7eb;
+        }
+        .total-box {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+        }
+        a.view-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a.view-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <nav style="
+        width: 100%;
+        background: #1f2937;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    ">
+        <div style="color: #fff; font-size: 20px; font-weight: bold;">Admin Dashboard</div>
+
+        <div>
+            <a href="/products" style="color: #fff; margin-right: 20px; text-decoration: none;">Products</a>
+            <a href="/supplier_orders" style="color: #fff; margin-right: 20px; text-decoration: none;">Supplier Orders</a>
+            <a href="/upload_invoice" style="color: #fff; margin-right: 20px; text-decoration: none;">Upload Invoice</a>
+            <a href="/adminLogout" style="color: #f87171; font-weight: bold; text-decoration: none;">Logout</a>
+        </div>
+    </nav>
+
+    <!-- ORDER HEADER -->
+    <div class="header-box">
+        <h2>Supplier Order Details</h2>
+        <p><strong>Supplier:</strong> <%= order.supplier %></p>
+        <p><strong>Invoice Number:</strong> <%= order.invoice_number %></p>
+        <p><strong>Invoice Date:</strong> <%= order.invoice_date %></p>
+        <p><strong>Total Amount:</strong> $<%= order.total_amount.toFixed(2) %></p>
+    </div>
+
+    <!-- ITEMS TABLE -->
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Brand</th>
+            <th>Pack Size</th>
+            <th>Unit</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+            <th>History</th>
+        </tr>
+
+        <% items.forEach(item => { %>
+            <tr>
+    <td><%= item.product_name || item.description %></td>
+    <td><%= item.brand %></td>
+    <td><%= item.pack_size %></td>
+    <td><%= item.unit %></td>
+    <td><%= item.quantity %></td>
+    <td>$<%= item.unit_price.toFixed(2) %></td>
+    <td>$<%= item.total.toFixed(2) %></td>
+
+    <td>
+        <%= item.product_name || item.description %>
+        <% if (item.is_new == 1) { %>
+            <span style="background:#10b981; color:white; padding:3px 6px; border-radius:4px; font-size:12px; margin-left:6px;">
+                NEW
+            </span>
+        <% } %>
+    </td>
+</tr>
+
+
+
+
+
+
+        <% }) %>
+    </table>
+
+    <div class="total-box">
+        Total: $<%= order.total_amount.toFixed(2) %>
+    </div>
+
+</body>
+</html>

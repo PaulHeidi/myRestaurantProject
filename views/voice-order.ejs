@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Voice Order – Daily Kitchen</title>
+
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 960px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 24px 28px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        h1 {
+            margin-top: 0;
+            color: #1f3b5c;
+            letter-spacing: 0.03em;
+        }
+        .search-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .search-row input[type="text"] {
+            flex: 1;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #cfd6e6;
+            font-size: 14px;
+        }
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #2f6fe4;
+            color: #ffffff;
+        }
+        .btn-mic {
+            background: #ffffff;
+            border: 1px solid #2f6fe4;
+            color: #2f6fe4;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-mic.listening {
+            background: #ffefef;
+            border-color: #e53935;
+            color: #e53935;
+        }
+        .status {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 10px;
+            min-height: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+        .price {
+            font-weight: 600;
+            color: #1f2933;
+        }
+        .company-coles {
+            color: #c62828;
+            font-weight: 600;
+        }
+        .company-woolworths {
+            color: #2e7d32;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Voice Order – Daily Kitchen</h1>
+        <p>Say a product like <strong>"butter"</strong> to search Coles and Woolworths, or type it below.</p>
+
+        <form id="searchForm" action="/voice-order" method="POST">
+            <div class="search-row">
+                <input
+                    type="text"
+                    id="queryInput"
+                    name="query"
+                    placeholder="Say or type a product (e.g. butter, milk, eggs)"
+                    value="<%= query %>"
+                    autocomplete="off"
+                />
+                <button type="button" id="micButton" class="btn btn-mic">
+                    🎤 <span id="micLabel">Voice</span>
+                </button>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+
+        <div class="status" id="statusText"></div>
+
+        <% if (results && results.length > 0) { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Product name</th>
+                        <th>Measurement</th>
+                        <th>Price</th>
+                        <th>Company</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% results.forEach(item => { %>
+                        <tr>
+                            <td><%= item.date %></td>
+                            <td><%= item.productName %></td>
+                            <td><%= item.measurement %></td>
+                            <td class="price">$<%= item.price.toFixed(2) %></td>
+                            <td class="company-<%= item.company.toLowerCase() %>"><%= item.company %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else if (query && (!results || results.length === 0)) { %>
+            <p>No results found for "<strong><%= query %></strong>".</p>
+        <% } %>
+    </div>
+
+    <script>
+        const micButton = document.getElementById('micButton');
+        const micLabel = document.getElementById('micLabel');
+        const statusText = document.getElementById('statusText');
+        const queryInput = document.getElementById('queryInput');
+        const searchForm = document.getElementById('searchForm');
+
+        let recognition;
+        let listening = false;
+
+        function initSpeech() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                statusText.textContent = 'Voice recognition is not supported in this browser.';
+                micButton.disabled = true;
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-AU';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                listening = true;
+                micButton.classList.add('listening');
+                micLabel.textContent = 'Listening...';
+                statusText.textContent = 'Listening, please say a product name...';
+            };
+
+            recognition.onend = () => {
+                listening = false;
+                micButton.classList.remove('listening');
+                micLabel.textContent = 'Voice';
+                if (!statusText.textContent.startsWith('Heard:')) {
+                    statusText.textContent = '';
+                }
+            };
+
+            recognition.onerror = (event) => {
+                listening = false;
+                micButton.classList.remove('listening');
+                micLabel.textContent = 'Voice';
+                statusText.textContent = 'Error: ' + event.error;
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                statusText.textContent = 'Heard: "' + transcript + '"';
+                queryInput.value = transcript;
+                searchForm.submit();
+            };
+        }
+
+        micButton.addEventListener('click', () => {
+            if (!recognition) initSpeech();
+            if (!recognition) return;
+
+            if (!listening) recognition.start();
+            else recognition.stop();
+        });
+
+        window.addEventListener('load', initSpeech);
+    </script>
+
+</body>
+</html>

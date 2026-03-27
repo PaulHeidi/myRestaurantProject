@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice Preview</title>
+    <style>
+        body { font-family: Arial; padding: 25px; background: #fafafa; }
+        h2 { margin-bottom: 5px; }
+        .header-box {
+            background: #fff; padding: 15px; border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;
+        }
+        table {
+            width: 100%; border-collapse: collapse; margin-top: 15px;
+            background: #fff; border-radius: 6px; overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td { border: 1px solid #ddd; padding: 10px; font-size: 14px; }
+        th { background: #f4f4f4; }
+        .buttons { margin-top: 25px; display: flex; gap: 15px; }
+        .btn {
+            padding: 10px 18px; border-radius: 5px; text-decoration: none;
+            font-size: 15px; cursor: pointer;
+        }
+        .btn-next { background: #007bff; color: white; }
+        .btn-back { background: #6c757d; color: white; }
+        .btn:hover { opacity: 0.9; }
+    </style>
+</head>
+
+<body>
+
+    <h2>Invoice Preview</h2>
+
+    <div class="header-box">
+        <p><strong>Supplier:</strong> <%= invoice.supplier %></p>
+        <p><strong>Invoice Number:</strong> <%= invoice.invoice_number %></p>
+        <p><strong>Invoice Date:</strong> <%= invoice.invoice_date %></p>
+    </div>
+
+    <h3>Items</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Unit</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% invoice.items.forEach((item, index) => { %>
+                <tr>
+                    <td><%= item.product_code %></td>
+                    <td><%= item.description %></td>
+                    <td><%= item.quantity %></td>
+                    <td><%= item.unit_of_measure %></td>
+                    <td>$<%= Number(item.unit_price).toFixed(2) %></td>
+                    <td>$<%= Number(item.total).toFixed(2) %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <div class="buttons">
+
+        <!-- Go to review page -->
+        <form action="/review-invoice" method="POST">
+
+            <!-- Invoice metadata -->
+            <input type="hidden" name="invoice_number" value="<%= invoice.invoice_number %>">
+            <input type="hidden" name="invoice_date" value="<%= invoice.invoice_date %>">
+            <input type="hidden" name="supplier" value="<%= invoice.supplier %>">
+
+            <!-- Items -->
+            <% invoice.items.forEach((item, index) => { %>
+                <input type="hidden" name="items[<%= index %>][product_code]" value="<%= item.product_code %>">
+                <input type="hidden" name="items[<%= index %>][description]" value="<%= item.description %>">
+                <input type="hidden" name="items[<%= index %>][quantity]" value="<%= item.quantity %>">
+                <input type="hidden" name="items[<%= index %>][unit_of_measure]" value="<%= item.unit_of_measure %>">
+                <input type="hidden" name="items[<%= index %>][unit_price]" value="<%= item.unit_price %>">
+                <input type="hidden" name="items[<%= index %>][total]" value="<%= item.total %>">
+            <% }) %>
+
+            <button type="submit" class="btn btn-next">Review & Edit</button>
+        </form>
+
+        <a href="/upload_invoice" class="btn btn-back">Back</a>
+    </div>
+
+</body>
+</html>

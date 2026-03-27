@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice Saved</title>
+    <style>
+        body { font-family: Arial; padding: 25px; }
+        .box {
+            background: #fff; padding: 20px; border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h2>Invoice Saved Successfully</h2>
+
+        <p><strong>Invoice Number:</strong> <%= invoiceNumber %></p>
+        <p><strong>Invoice Date:</strong> <%= invoiceDate %></p>
+
+        <a href="/upload">Upload Another Invoice</a>
+    </div>
+
+</body>
+</html>

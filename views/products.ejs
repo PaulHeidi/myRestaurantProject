@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Products</title>
+    <style>
+        body { font-family: Arial; padding: 40px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background: #f2f2f2; }
+        nav {
+            width: 100%;
+            background: #1f2937;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        nav a {
+            color: #fff;
+            margin-right: 20px;
+            text-decoration: none;
+        }
+        nav a.logout {
+            color: #f87171;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <nav>
+        <div style="color: #fff; font-size: 20px; font-weight: bold;">Admin Dashboard</div>
+
+        <div>
+            <a href="/products">Products</a>
+            <a href="/supplier_orders">Supplier Orders</a>
+            <a href="/upload_invoice">Upload Invoice</a>
+            <a href="/adminLogout" class="logout">Logout</a>
+        </div>
+    </nav>
+
+    <h1>Product List</h1>
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Brand</th>
+            <th>Pack Size</th>
+            <th>Unit</th>
+            <th>Latest Price</th>
+        </tr>
+
+        <% products.forEach(product => { %>
+            <tr>
+                <td><%= product.product_name %></td>
+                <td><%= product.brand %></td>
+                <td><%= product.pack_size %></td>
+                <td><%= product.unit %></td>
+                <td>
+                    <% if (product.latest_price) { %>
+                        $<%= product.latest_price %>
+                    <% } else { %>
+                        —
+                    <% } %>
+                </td>
+            </tr>
+        <% }) %>
+    </table>
+
+</body>
+</html>
+

@@ -1,0 +1,207 @@
+<html>
+    <head>
+       <%- include('partials/header1.ejs') %>
+       <!--dropdown menu-->
+                        
+                          <header class="top-header">
+                                <div class="header-left">
+                                    <img src="/public/images/logo3.png" alt="Logo" class="header-logo">
+                                </div>
+
+                                <div class="header-center">
+                                    <h1 class="header-title">KitchoraX</h1>
+                                    <p class="kitchorax-subtitle">A modern, intelligent, next‑generation kitchen management system.</p>
+                                </div>
+
+
+
+                                <div class="header-right">
+                                    <!-- Add logout button or other items here -->
+                                </div>
+                            </header>
+
+                        <div class="bodyImg2" >
+
+                        </div>                           
+                       <style>
+                        /*Sign up form */
+                        /* Container for image and form */
+                             .image-container {
+                                 position: relative; /* Needed for absolute positioning inside */
+                                 display:flex;
+                             }
+
+                                          /* The background image */
+                             .image-container img {
+                             display: block;   
+                            }
+
+                        /* The form overlay */
+                             .form-overlay {
+                              position: absolute;
+                              height: 100%;
+                              width:20%;
+                              top: 10px; /* Distance from top of image */
+                              left: 800px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+                              box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                        }
+
+                         /* Form styling */
+                            .form-overlay input{
+                              background-color: rgba(250, 235, 215, 0.518);
+                              height: 20px;    
+                              padding: 0px;
+                              width: 220px;
+                              border-style:solid;
+
+                        }
+                             .form-overlay button {
+                                height: 20%;
+                                width: 30%;
+                                position:relative;
+                                border: none;
+                                float:right;
+                                background-color: rgba(250, 235, 215, 0.518);
+                        }
+                </style>
+
+
+<!--Login form-->
+                 <style>
+                       
+
+                        /* The form overlay */
+                             .form-overlay1 {
+                                
+                                background-size: cover;
+                                background-position: center;
+                                background-repeat: no-repeat;
+                                width: 100%;
+
+                              
+                              height: 100vh;
+                              display:grid;
+                              
+                             
+                              border-radius: 5px;
+                              border: 2px solid rgb(196, 144, 40);
+                              background-image: url('/public/images/bgimage.png');
+                              border-radius: 8px;
+                              box-shadow: 6 8px 10x rgba(0,0,0,0.2);
+                        }
+
+                         /* Form styling */
+                            .form-overlay1 input{
+                              background-color: rgb(249, 249, 249); 
+                              height: 50px;    
+                              padding: 5px;
+                              width: 240px;
+                              border:5px;
+                              border-radius: 10px;
+                              outline: none;
+                              margin-bottom: 12px;
+                             
+
+                        }
+                             .form-overlay1 button {
+                               width: 100%;
+                               height:auto;
+                                padding: 12px;
+                                margin-top: 10px;
+                                background: #0078ff;
+                                color: white;
+                                border: none;
+                                border-radius: 6px;
+                                font-size: 16px;
+                                cursor: pointer;
+                                transition: 0.2s;
+                                                    }
+                                                 
+                </style>
+
+
+                <!--Social media connection -->
+                <style>
+                        .text-overlay {
+                              position: absolute;
+                              height: 100%;
+                              width:20%;
+                              top: 10px; /* Distance from top of image */
+                              left: 10px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+                              box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                        }
+                        .sm_icon {
+                          position: absolute;
+                              height: 20%;
+                              width:15%;
+                              top: 20px; /* Distance from top of image */
+                              left: 3px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-color: aliceblue;
+                          }
+
+                          .sm_icon1{
+                            position: absolute;
+                              height: 20%;
+                              width:15%;
+                              top: 20px; /* Distance from top of image */
+                              left: 42px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+                          }
+                              .sm_icon2{
+                            position: absolute;
+                              height: 20%;
+                              width:15%;
+                              top: 20px; /* Distance from top of image */
+                              left: 82px; /* Distance from left of image */
+                              background:transparent; /* Semi-transparent background */
+                              padding: 0px;
+                              border-radius: 1px;
+
+                          }
+                </style>
+    </head>
+        
+<body>
+    
+      
+          
+<!--Form testing-->
+        <div class="form-overlay1">
+                            
+                <div class="login-box">
+                    <h2>New member register</h2>
+                   <form action="/memberRegister" method="post">
+                        <input type="text" id="adminName" placeholder="Admin Name" name="adminName" required><br>
+                        <input type="text" id="email" placeholder="Email" name="email" required><br>
+                        <input type="text" id="userName" placeholder="User name" name="userName" required><br>
+                        <input type="password" id="password" placeholder="Password" name="password" required><br>
+                        <button type="submit">Register</button>
+                    </form>
+                </div>
+                        
+                        </div>
+
+
+                        
+            
+                 
+
+                <!--footer-->
+                    <div class="footer">
+                     <p>&copy; My website , all rights reserved</p>
+                    </div>
+            
+        </body>
+        
+</html>
+

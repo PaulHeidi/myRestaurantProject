@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Review Invoice</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body class="bg-light">
+
+<div class="container py-4">
+
+    <h2 class="mb-3">Review Invoice</h2>
+
+    <!-- Invoice Header -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Supplier:</strong> <%= invoice.supplier %></p>
+            <p><strong>Invoice Number:</strong> <%= invoice.invoiceNumber || "N/A" %></p>
+            <p><strong>Invoice Date:</strong> <%= invoice.invoiceDate || "N/A" %></p>
+        </div>
+    </div>
+
+
+    <!-- ====================================================== -->
+    <!-- FRESCO TABLE -->
+    <!-- ====================================================== -->
+    <% if (invoice.supplier === "Fresco") { %>
+
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">Fresco Invoice Items</div>
+        <div class="card-body p-0">
+
+            <table class="table table-striped table-bordered mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Stockcode</th>
+                        <th>Description</th>
+                        <th>Unit</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% items.forEach((item, index) => { %>
+                        <tr>
+                            <td><%= item.stockcode %></td>
+                            <td><%= item.description %></td>
+                            <td><%= item.unit %></td>
+                            <td><%= item.quantity %></td>
+                            <td><%= item.unit_price %></td>
+                            <td><%= item.total %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <% } %>
+
+
+
+    <!-- ====================================================== -->
+    <!-- PFD TABLE -->
+    <!-- ====================================================== -->
+    <% if (invoice.supplier === "PFD") { %>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">PFD Invoice Items</div>
+        <div class="card-body p-0">
+
+            <table class="table table-striped table-bordered mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>UM</th>
+                        <th>Qty Ordered</th>
+                        <th>Qty Supplied</th>
+                        <th>Price</th>
+                        <th>Net Value</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% items.forEach((item, index) => { %>
+                        <tr>
+                            <td><%= item.code %></td>
+                            <td><%= item.description %></td>
+                            <td><%= item.unit %></td>
+                            <td><%= item.qty_ordered %></td>
+                            <td><%= item.qty_supplied %></td>
+                            <td><%= item.unit_price %></td>
+                            <td><%= item.net_value %></td>
+                            <td><%= item.total %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <% } %>
+
+
+
+    <!-- ====================================================== -->
+    <!-- SIMON GEORGE TABLE -->
+    <!-- ====================================================== -->
+    <% if (invoice.supplier === "SIMON_GEORGE") { %>
+
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">Simon George Invoice Items</div>
+        <div class="card-body p-0">
+
+            <table class="table table-striped table-bordered mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Unit</th>
+                        <th>Qty Supplied</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                        <th>O/S</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% items.forEach((item, index) => { %>
+                        <tr>
+                            <td><%= item.product_code %></td>
+                            <td><%= item.description %></td>
+                            <td><%= item.unit %></td>
+                            <td><%= item.quantity %></td>
+                            <td><%= item.unit_price %></td>
+                            <td><%= item.total %></td>
+                            <td><%= item.out_of_season ? "OS" : "" %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <% } %>
+
+
+
+    <!-- ====================================================== -->
+    <!-- BIDFOOD TABLE -->
+    <!-- ====================================================== -->
+    <% if (invoice.supplier === "BIDFOOD") { %>
+
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">Bidfood Invoice Items</div>
+        <div class="card-body p-0">
+
+            <table class="table table-striped table-bordered mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Brand</th>
+                        <th>Pack Size</th>
+                        <th>Unit</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Excl GST</th>
+                        <th>GST</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% items.forEach((item, index) => { %>
+                        <tr>
+                            <td><%= item.product_code %></td>
+                            <td><%= item.description %></td>
+                            <td><%= item.brand %></td>
+                            <td><%= item.pack_size %></td>
+                            <td><%= item.unit %></td>
+                            <td><%= item.quantity %></td>
+                            <td><%= item.unit_price %></td>
+                            <td><%= item.excl_gst %></td>
+                            <td><%= item.gst %></td>
+                            <td><%= item.total %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <% } %>
+
+
+    <!-- =============================== -->
+    <!-- INVOICE TOTAL SUMMARY -->
+    <!-- =============================== -->
+
+    <div class="d-flex justify-content-end mt-4">
+        <div class="card shadow-sm" style="width: 320px;">
+            <div class="card-header bg-secondary text-white">
+                <strong>Invoice Summary</strong>
+            </div>
+            <div class="card-body">
+
+                <% 
+                    let subtotal = 0;
+                    items.forEach(i => subtotal += Number(i.total || 0));
+
+                    let gst = 0;
+                    let grandTotal = subtotal + gst;
+                %>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span><strong>Subtotal:</strong></span>
+                    <span>$<%= subtotal.toFixed(2) %></span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span><strong>GST:</strong></span>
+                    <span>$<%= gst.toFixed(2) %></span>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between">
+                    <span><strong>Invoice Total:</strong></span>
+                    <span class="fw-bold text-success">$<%= grandTotal.toFixed(2) %></span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =============================== -->
+    <!-- SAVE BUTTON + HIDDEN FIELDS -->
+    <!-- =============================== -->
+
+    <form action="/save-invoice" method="POST" class="mt-4">
+
+        <!-- SUPPLIER ID MAPPING (CRITICAL FIX) -->
+        <%
+            const supplierMap = {
+                "fresco": 10,
+                "pfd": 11,
+                "simon_george": 12,
+                "bidfood": 13
+            };
+
+            const supplierKey = String(invoice.supplier || "")
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, "_");
+
+            const supplier_id = supplierMap[supplierKey] || null;
+        %>
+
+        <!-- DEBUG (remove after testing) -->
+        <p style="color:red;">DEBUG supplier_id: <%= supplier_id %></p>
+
+        <!-- REQUIRED FIELD -->
+        <input type="hidden" name="supplier_id" value="<%= supplier_id %>">
+
+        <!-- Invoice header -->
+        <input type="hidden" name="invoice_number" value="<%= invoice.invoiceNumber %>">
+        <input type="hidden" name="invoice_date" value="<%= invoice.invoiceDate %>">
+
+        <!-- Items -->
+        <% items.forEach((item, index) => { %>
+            <input type="hidden" name="items[<%= index %>][product_code]" value="<%= item.product_code || item.code || item.stockcode %>">
+            <input type="hidden" name="items[<%= index %>][description]" value="<%= item.description %>">
+            <input type="hidden" name="items[<%= index %>][brand]" value="<%= item.brand || '' %>">
+            <input type="hidden" name="items[<%= index %>][pack_size]" value="<%= item.pack_size || item.unit || '' %>">
+            <input type="hidden" name="items[<%= index %>][unit_of_measure]" value="<%= item.unit || '' %>">
+            <input type="hidden" name="items[<%= index %>][quantity]" value="<%= item.quantity || item.qty_supplied || item.qty_ordered %>">
+            <input type="hidden" name="items[<%= index %>][unit_price]" value="<%= item.unit_price %>">
+            <input type="hidden" name="items[<%= index %>][gst]" value="<%= item.gst || 0 %>">
+            <input type="hidden" name="items[<%= index %>][total]" value="<%= item.total %>">
+        <% }) %>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-success btn-lg px-4">
+                Save Invoice
+            </button>
+        </div>
+
+    </form>
+
+</div> <!-- container -->
+</body>
+</html>
+

@@ -1,32 +1,29 @@
 <html>
     <head>
        <%- include('partials/header1.ejs') %>
-       <!--dropdown menu-->
-                        <div class="dropdown" >
-                              <button tupe="button" class="image-btn"><img src="/public/images/dropdownBar.jpg" width="70" height="20"></button>
-                             <div class="content">
-                                    <a href="/">Home</a>
-                                   <a href="/menu">Menu</a>
-                                   <a href="/booking">Reservation</a>
-                                   <a href="/onlineOrder">Order online</a>
-                                   <a href="/gallery">Gallery</a>
-                                   <a href="/career1">Career</a> 
-                                   <a href="/feedback">Feedback</a>
-                                   <a href="/contactus">Contact us</a> 
-                                  <a href="/adminLogin">Admin login</a>                            </div>
-                       </div>   
-                        <div class="header">
-                        </div>   
+       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+       <header class="top-header">
+                                <div class="header-left">
+                                    <img src="/public/images/logo3.png" alt="Logo" class="header-logo">
+                                </div>
+
+                                <div class="header-center">
+                                    <h1 class="header-title">KitchoraX</h1>
+                                    <p class="kitchorax-subtitle">A modern, intelligent, next‑generation kitchen management system.</p>
+                                </div>
+
+
+
+                                <div class="header-right">
+                                    <!-- Add logout button or other items here -->
+                                </div>
+                            </header>
                         <div class="bodyImg2" >
 
                         </div>   
 
 
-                        <script
-                              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6myHzS10YXdcazAFalmXvDkrYCp5cLc8&libraries=maps,marker&v=weekly"
-                                      defer>
-                         </script>
-                        <!--google map stylesheet-->
+                        
 
 
 
@@ -54,35 +51,21 @@
 
                         /* The form overlay */
                              .form-overlay1 {
-                              width: 100%;
-                              height: 100vh;
-                              display: grid;
-                              place-items: center;
-                              background-image: url('/public/images/contact2.jpg');
-                              background-size:cover; 
-                              background-repeat: no-repeat;
-                              border-radius: 5px;
-                              border: 2px solid rgb(196, 144, 40);
-                              top: 600px; /* Distance from top of image */
-                              left: 270px; /* Distance from left of image */
-                              background-color: rgb(241, 241, 240);
-                              padding: 80px 47px ;
-                              border-radius: 8px;
-                              box-shadow: 6 8px 10x rgba(0,0,0,0.2);
+                              background-size: cover;
+                                background-position: center;
+                                background-repeat: no-repeat;
+                                width: 100%;                              
+                                height: auto;
+                                display:grid;           
+                                border-radius: 5px;
+                                border: 2px solid rgb(84, 143, 158);
+                                background-image: url('/public/images/bgimage.png');
+                                border-radius: 8px;
+                                box-shadow: 6 8px 10x rgba(0,0,0,0.2);
                         }
 
                          /* Form styling */
-                            .form-overlay1 input{
-                              background-color: rgba(215, 130, 20, 0.684);
-                              height: 30px;    
-                              padding: 20px;
-                              width: 220px;
-                              border:5px;
-                              border-radius: 10px;
-                              outline: none;
-                              margin-bottom: 12px;
-
-                        }
+                          
                              .form-overlay1 button {
                                 height: 3%;
                                 width: 20%;
@@ -90,45 +73,35 @@
                                 border:2px solid;
                                 background-color: green;
                         }
-                         .form-overlay1 textarea{
-                              background-color:  rgba(215, 130, 20, 0.684);
-                              padding: 10px;
-                              width: 445px;
-                              border:5;
-                              border-radius: 10px;
-                              outline: none;
-                              margin-bottom: 12px;
-
-                        }
-                        .form-overlay1 select{
-                             background-color:  rgba(215, 130, 20, 0.684);
-                              height: 35px;    
-                              padding: 10px;
-                              width: 220px;
-                              border:5;
-                              border-radius: 10px;
-                              outline: none;
-                              margin-bottom: 12px;
-                              font-size: small;
-                              font-weight: lighter;
-
-                        }
+                         
+                        
                 </style>
-<title>Users Table</title>
-    <style>
-        table { border-collapse: collapse; width: 50%; margin: 20px auto;}
-        th, td { border: 2px solid #e9890a; background-color:#e9880a70; padding: 8px; text-align: left; font-size: large;font-weight: bold;}
-        th { background-color: #f6a90f; }
-        h2 { text-align: center; }
-       
-    </style>
+                                <title>Users Table</title>
+                                    <style>
+                                        table { border-collapse: collapse; width: 50%; margin: 20px auto;}
+                                        th, td { border: 2px solid #e9890a; background-color:#91c3c670; padding: 8px; text-align: left; font-size: large;font-weight: bold;}
+                                        th { background-color: #488f94; }
+                                        h2 { text-align: center; }
+                                    
+                                    </style>
 
                
                                 
     </head>
         
     <body>
-    
+                    <% if (popup) { %>
+                            <script>
+                                Swal.fire({
+                                    title: "Success!",
+                                    text: "<%= popup %>",
+                                    icon: "success",
+                                    confirmButtonColor: "#3085d6"
+                                });
+                            </script>
+                <% } %>
+
+
         <!--    <%- include('partials/navbar1.ejs') %> -->
           
 <!--Form testing-->
@@ -137,125 +110,96 @@
   
                 <h2>Pending Admin Approvals</h2>
 
-<table border="1" cellpadding="8" cellspacing="0">
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Username</th>
-        <th>Action</th>
-    </tr>
+                                    <table border="1" cellpadding="8" cellspacing="0">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Username</th>
+                                            <th>Action</th>
+                                        </tr>
 
-    <% if (admins.length === 0) { %>
-        <tr>
-            <td colspan="4">No pending admins.</td>
-        </tr>
-    <% } %>
+                                        <% if (admins.length === 0) { %>
+                                            <tr>
+                                                <td colspan="4">No pending admins.</td>
+                                            </tr>
+                                        <% } %>
 
-    <% admins.forEach(a => { %>
-        <tr>
-            <td><%= a.adminName %></td>
-            <td><%= a.email %></td>
-            <td><%= a.userName %></td>
+                                        <% admins.forEach(a => { %>
+                                            <tr>
+                                                <td><%= a.adminName %></td>
+                                                <td><%= a.email %></td>
+                                                <td><%= a.userName %></td>
 
-            <td>
+                                                <td>
 
-                <!-- APPROVE -->
-                <form action="/admin/approve/<%= a.id %>" method="POST" style="display:inline;">
-                    <button type="submit" style="
-                        padding: 10px 20px;
-                        background:#046e12;
-                        color:white;
-                        border:none;
-                        border-radius:6px;
-                        cursor:pointer;
-                        margin-right:5px;
-                    ">
-                        Approve
-                    </button>
-                </form>
+                                                    <!-- APPROVE -->
+                                                    <form action="/admin/approve/<%= a.id %>" method="POST" style="display:inline;">
+                                                        <button type="submit" style="
+                                                            padding: 10px 20px;
+                                                            background:#046e12;
+                                                            color:white;
+                                                            border:none;
+                                                            border-radius:6px;
+                                                            cursor:pointer;
+                                                            margin-right:5px;
+                                                        ">
+                                                            Approve
+                                                        </button>
+                                                    </form>
 
-                <!-- REJECT -->
-                <form action="/admin/reject/<%= a.id %>" method="POST" style="display:inline;">
-                    <button type="submit" style="
-                        padding: 10px 20px;
-                        background:#e63946;
-                        color:rgb(253, 252, 252);
-                        border:none;
-                        border-radius:6px;
-                        cursor:pointer;
-                        margin-right:5px;
-                    ">
-                        Reject
-                    </button>
-                </form>
+                                                    <!-- REJECT -->
+                                                    <form action="/admin/reject/<%= a.id %>" method="POST" style="display:inline;">
+                                                        <button type="submit" style="
+                                                            padding: 10px 20px;
+                                                            background:#e63946;
+                                                            color:rgb(253, 252, 252);
+                                                            border:none;
+                                                            border-radius:6px;
+                                                            cursor:pointer;
+                                                            margin-right:5px;
+                                                        ">
+                                                            Reject
+                                                        </button>
+                                                    </form>
 
-                <!-- DELETE -->
-                <form action="/admin/delete/<%= a.id %>" method="POST" style="display:inline;"
-                      onsubmit="return confirm('Are you sure you want to DELETE this admin permanently?');">
-                    <button type="submit" style="
-                        padding: 10px 20px;
-                        background:#e63946;
-                        color:white;
-                        border:none;
-                        border-radius:6px;
-                        cursor:pointer;
-                    ">
-                        Delete
-                    </button>
-                </form>
+                                                    <!-- DELETE -->
+                                                    <form action="/admin/delete/<%= a.id %>" method="POST" style="display:inline;"
+                                                        onsubmit="return confirm('Are you sure you want to DELETE this admin permanently?');">
+                                                        <button type="submit" style="
+                                                            padding: 10px 20px;
+                                                            background:#e63946;
+                                                            color:white;
+                                                            border:none;
+                                                            border-radius:6px;
+                                                            cursor:pointer;
+                                                        ">
+                                                            Delete
+                                                        </button>
+                                                    </form>
 
-            </td>
-        </tr>
-    <% }) %>
-</table>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </table>
 
-<p><a href="/adminPage">Back to Admin Page</a></p>
+                        <p><a href="/adminPage">Back to Admin Page</a></p>
 
-<div style="margin-top:20px; text-align:center;">
-    <a href="/adminLogout" style="
-        display:inline-block;
-        padding:10px 20px;
-        background:#e63946;
-        color:white;
-        border-radius:6px;
-        text-decoration:none;
-        font-weight:bold;
-    ">
-        Logout
-    </a>
-</div>
+                                                <div style="margin-top:20px; text-align:center;">
+                                                    <a href="/memberLogin" style="
+                                                        display:inline-block;
+                                                        padding:10px 20px;
+                                                        background:#e63946;
+                                                        color:rgb(28, 10, 162);
+                                                        border-radius:6px;
+                                                        text-decoration:none;
+                                                        font-weight:bold;
+                                                    ">
+                                                        Logout
+                                                    </a>
+                                                </div>
 
          
-                    <!-- Sign up form -->              
-                    <div class="image-container">
-                        <img class="img2" src="/public/images/bodyImg2.jpg">
-  
-                              <form class="form-overlay" action="contact2" method="POST">
-                                 <h3>Sign Up</h3>
-                                     <input type="text" name="name" id="name" placeholder="Your name"></br>
-                                     <input type="email" name="email" id="email" placeholder="your email"></br>
-                                     <button type="submit">Submit</button>
-                              </form>
-                    
-                    <!--Social media connection -->
-                       <div class="text-overlay">
-                         <h6>Follow us on .....</h6>
-                        <a href="https://www.instagram.com" target="_blank">
-                            <img src="/public/images/instragram.png" class="sm_icon" >
-                        </a>
-
-                        <a href="https://www.facebook.com" target="_blank">
-                            <img src="/public/images/facebook.png" class="sm_icon1">
-                        </a> 
-
-                        <a href="https://www.facebook.com" target="_blank">
-                            <img src="/public/images/twiter.png" class="sm_icon2">
-                        </a>  
-                        </div>   
-            
-
-
-                        
+                                       
             
                  
 

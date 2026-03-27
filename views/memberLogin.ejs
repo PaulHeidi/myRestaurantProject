@@ -1,0 +1,244 @@
+<html>
+    <head>
+       <%- include('partials/header1.ejs') %>
+       <!--sweet alert notification-->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                        
+                            <header class="top-header">
+                                <div class="header-left">
+                                    <img src="/public/images/logo3.png" alt="Logo" class="header-logo">
+                                </div>
+
+                                <div class="header-center">
+                                    <h1 class="header-title">KitchoraX</h1>
+                                    <p class="kitchorax-subtitle">A modern, intelligent, next‑generation kitchen management system.</p>
+                                </div>
+
+
+
+                                <div class="header-right">
+                                    <!-- Add logout button or other items here -->
+                                </div>
+                            </header>
+
+
+
+
+
+  
+                        <div class="bodyImg2" >
+
+                        </div>                           
+                       <style>
+                        /*Sign up form */
+                        /* Container for image and form */
+                             .image-container {
+                                 position: relative; /* Needed for absolute positioning inside */
+                                 display:flex;
+                             }
+
+                                          /* The background image */
+                             .image-container img {
+                             display: block;   
+                            }
+
+                      </style>
+
+
+            <!--Login form-->
+                 <style>
+                       
+
+                        /* The form overlay */
+                             .form-overlay1 {
+                                
+                                background-size: cover;
+                                background-position: center;
+                                background-repeat: no-repeat;
+                                width: 100%;                              
+                                height: 100vh;
+                                display:grid;           
+                                border-radius: 5px;
+                                border: 2px solid rgb(196, 144, 40);
+                                background-image: url('/public/images/bgimage.png');
+                                border-radius: 8px;
+                                box-shadow: 6 8px 10x rgba(0,0,0,0.2);
+                            }
+
+                         /* Form styling */
+                            .form-overlay1 input{
+                              background-color: rgb(249, 249, 249); 
+                              height: 50px;    
+                              padding: 5px;
+                              width: 240px;
+                              border:5px;
+                              border-radius: 10px;
+                              outline: none;
+                              margin-bottom: 12px;
+                             
+
+                        }
+                             .form-overlay1 button {
+                               width: 100%;
+                               height:auto;
+                                padding: 12px;
+                                margin-top: 10px;
+                                background: #0078ff;
+                                color: white;
+                                border: none;
+                                border-radius: 6px;
+                                font-size: 16px;
+                                cursor: pointer;
+                                transition: 0.2s;
+                                                    }
+                                                 
+                </style>
+
+
+
+                                <style>
+                                            .error-box {
+                                                background: #ffe6e6;
+                                                padding: 12px;
+                                                border-left: 4px solid #cc0000;
+                                                margin-bottom: 10px;
+                                            }
+                                            .resend-link {
+                                                color: #0066cc;
+                                                font-weight: bold;
+                                            }
+                                            .resend-link:hover {
+                                                text-decoration: underline;
+                                            }
+                                </style>
+                                <style>
+                                            .popup {
+                                                display: none;
+                                                position: fixed;
+                                                top: 0; left: 0;
+                                                width: 100%; height: 100%;
+                                                background: rgba(0,0,0,0.5);
+                                            }
+                                            .popup-content {
+                                                background: white;
+                                                padding: 20px;
+                                                width: 300px;
+                                                margin: 15% auto;
+                                                border-radius: 8px;
+                                                text-align: center;
+                                                box-shadow: 0 0 10px #333;
+                                            }
+                                </style>
+
+
+
+
+                
+</head>
+        
+<body>
+
+            <% if (popup) { %>
+                <script>
+                    Swal.fire({
+                        title: "Registration Successful!",
+                        text: "<%= popup %>",
+                        icon: "success",
+                        confirmButtonColor: "#3085d6"
+                    });
+                </script>
+            <% } %>
+
+
+            <% const popupMessage = (typeof popup !== "undefined" && popup) ? popup : null; %>
+             <% if (success) { %>
+                        <script>
+                                Swal.fire({
+                                    title: "Approved!",
+                                    text: "<%= success %>",
+                                    icon: "success",
+                                    confirmButtonColor: "#3085d6",
+                                    confirmButtonText: "OK"
+                                });
+                        </script>
+             <% } %>
+                        <% if (popupMessage) { %>
+                                    <script>
+                                        Swal.fire({
+                                            title: "Info",
+                                            text: "<%= popupMessage %>",
+                                            icon: "info"
+                                        });
+                                    </script>
+                        <% } %>
+
+
+
+
+          
+                    <!--Form testing-->
+                    <div class="form-overlay1">
+                 
+
+                                    <div class="login-box">
+                                        <h2>Member Login</h2>
+
+                                        <form action="/memberLogin" method="post">
+                                            <input type="text" name="username" placeholder="User name" required>
+                                            <input type="password" name="password" placeholder="Password" required>
+
+                                            <button type="submit">Login</button>
+
+                                            <div class="forgot-link">
+                                                <a href="forgotPass">Forgot password / Username</a>
+                                            </div>
+                                        </form>
+                                    </div>
+
+
+
+
+                                            <br>
+                                            
+
+                                                <% if (success) { %>
+                                                    <div class="box">
+                                                        <h1>✔ Email Verified Successfully</h1>
+                                                        <p>Your account is now active. You can log in.</p>
+                                                        <a href="/memberLogin">Go to Login</a>
+                                                    </div>
+
+                                                    <script>
+                                                        Swal.fire({
+                                                            title: "Email Verified!",
+                                                            text: "Your account is now active.",
+                                                            icon: "success",
+                                                            confirmButtonColor: "#3085d6",
+                                                            confirmButtonText: "OK"
+                                                        });
+                                                    </script>
+                                                <% } %>
+
+
+                                                <% if (error) { %>
+                                                    <div class="error-box">
+                                                        <%= error %>
+
+                                                        <% if (error.includes("verify your email")) { %>
+                                                            <br>
+                                                            <a href="/resendVerification" class="resend-link">Resend verification email</a>
+                                                        <% } %>
+                                                    </div>
+                                                <% } %>
+
+</div>
+                    <div class="footer">
+                     <p>&copy; My website , all rights reserved</p>
+                    </div>
+             
+
+        </body>
+        
+</html>
+

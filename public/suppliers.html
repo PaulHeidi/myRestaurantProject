@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Supplier Search</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #f4f4f4; }
+    input { padding: 10px; width: 300px; }
+    button { padding: 10px 15px; }
+  </style>
+</head>
+<body>
+
+  <h2>Search Suppliers</h2>
+
+  <input type="text" id="query" placeholder="Search for a product">
+  <button onclick="search()">Search</button>
+
+  <table id="resultsTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Unit</th>
+        <th>Price</th>
+        <th>Supplier</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function search() {
+      const query = document.getElementById("query").value;
+
+      const res = await fetch(`/suppliers/search?query=${encodeURIComponent(query)}`);
+      const data = await res.json();
+
+      const tbody = document.querySelector("#resultsTable tbody");
+      tbody.innerHTML = "";
+
+      data.results.forEach(item => {
+        const row = `
+          <tr>
+            <td>${item.date}</td>
+            <td>${item.name}</td>
+            <td>${item.unit}</td>
+            <td>${item.price ?? ""}</td>
+            <td>${item.supplier}</td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+  </script>
+
+</body>
+</html>

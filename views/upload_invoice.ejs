@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Invoice</title>
+    <style>
+        body { font-family: Arial; padding: 40px; }
+    </style>
+</head>
+<body>
+
+    <nav style="
+        width: 100%;
+        background: #1f2937;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    ">
+        <div style="color: #fff; font-size: 20px; font-weight: bold;">Admin Dashboard</div>
+
+        <div>
+            <a href="/products" style="color: #fff; margin-right: 20px; text-decoration: none;">Products</a>
+            <a href="/supplier-orders" style="color: #fff; margin-right: 20px; text-decoration: none;">Supplier Orders</a>
+            <a href="/upload_invoice" style="color: #fff; margin-right: 20px; text-decoration: none;">Upload Invoice</a>
+            <a href="/adminLogout" style="color: #f87171; font-weight: bold; text-decoration: none;">Logout</a>
+        </div>
+    </nav>
+
+    <h1>Upload Invoice</h1>
+
+    <!-- Option B: MUST POST to /upload-invoice -->
+    <form action="/upload-invoice" method="POST" enctype="multipart/form-data">
+        <input type="file" name="invoice" required>
+        <button type="submit">Upload</button>
+    </form>
+
+</body>
+</html>
